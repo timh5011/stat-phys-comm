@@ -1,0 +1,228 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm, amssymb, amsmath}
+\usepackage{esint}
+\usepackage{physics}
+\usepackage{gensymb}
+
+\usepackage[a4paper, margin=1in]{geometry}
+
+
+\title{Statistical Mechanics and the Dynamics of Communication within Populations}
+\author{Tim Healy}
+\date{Spring 2025} 
+
+\begin{document}
+\maketitle
+
+
+\section{Conceptual Outline}
+
+I am interested in the dynamics of \emph{ideas}. It is not possible to use physics to describe some abstract notion of an idea. However, the way humans interact with ideas is through physical representations of them––written and verbal language, art, music, etc. This is now in the realm of real, observable physics.
+
+The purpose of this document is to justify the claim that statistical mechanics and information theory are the correct tools to describe the dynamics of the communication of ideas within human populations. Information theory does a good job at describing the containers of information, but does little to describe the dynamics of it. This is where statistical mechanics becomes useful. \textbf{My primary claim is that the communication of ideas within a human population obeys the same dynamics as those of physical systems evolving towards thermal equilibrium.} I will argue this by slightly altering the definitions of the mathematical objects used in standard statistical mechanics. These objects are:
+
+\begin{enumerate}
+    \item A model of physical space used to define microstates
+    \item Macrostates, which are related to microstates by a projection map $\pi$
+\end{enumerate} 
+
+We will see that by characterizing macrostates of a system by the ideas which are physically represented somewhere within that system, rather than by the standard thermodynamic variables, we will find the behavior described above.
+
+\subsubsection{The Representation vs. Meaning of Ideas as Physical Symmetry (at a certain scale)}
+
+The only way we can say what an idea \emph{means} is by observing what it \emph{does}. How do people react to being given this piece of information? Ideas have causal ability; the future actions that a person takes are dependent on the information they are given or not given. If we have two messages $M_1$ and $M_2$ and it does not matter whether a person is sent $M_1$ or $M_2$, because their future actions will be exactly the same in both cases, then these messages mean the same thing to that person. That is, the state and dynamics of this person are invariant to the exchange of $M_1$ for $M_2$. This is a physical symmetry of this person in the same way that spherical objects are invariant to rotations in O$(3)$. It follows that the dynamics of ideas should only depend on what those ideas mean and not on how they are represented.
+
+For simplicity, instead of considering a person, we can consider a detector connected to a computer. The detector detects an incoming signal from an information source and reads it into the computer. The computer takes in this input and performs some computation on it to make a decision about what to do next (if signal = signalA,  then take action A , else if signal = signalB, etc\dots). No detector has infinite resolution. Therefore, the detector will collapse certain input signals onto the same input message for the computer. Thus, the computer's decision (and the dynamics of the system) will be the same for certain input messages. Thus, the macroscopic meaning of ideas (where ``macro" refers to the scale at which the detector differentiates between messages) is invariant to microscopic representations of those ideas. 
+
+Whether or not a detector sees two signals as equivalent may not only be an issue of scale. It also may be an issue of what that detector is detecting for. Or, in the case of humans, what that person cares about. If you care about something, it has the ability to change what you do. If you don't care about something, your state is invariant to it. Therefore, $M_1$ and $M_2$ are two different messages, but their difference is not something that is important to you (or the difference is simply small enough that you don't care), and thus will not impact your future actions, then you are invariant to the exchange of $M_1$ and $M_2$ as well.
+
+The goal of this project is to use the dynamics of physical messages as a tool to study the dynamics of the ideas which they represent. I am hoping to develop a fully self-consistent theory which can make statements about how ideas spread through populations, without relying on how these ideas are represented, in the same way that any other theory in physics does not depend on the coordinates used to describe it. We will now use this idea of physical representations of ideas vs. their meaning to define microstates and macrostates.
+
+\section{Formalism}
+
+\subsection{Definitions}
+
+We begin with a simplified model of physical space. We consider a finite 2-dimensional $M\times M$ lattice where each square on this grid can take on one of two binary states. That is, if $M\gg 1$, our set is \[ \mathbb{Z}^2\cap[0,M]^2. \]
+
+We will call each individual configuration of this grid–that is, the grid with all $M^2$ squares being assigned a binary value–an \emph{information microstate} or \emph{information state}. We let $\mathcal{M}$ denote the set of all information microstates. Note that $|\mathcal{M}|=2^{M^2}$.
+
+We now let $a\in\mathbb{Z}$ divide $M$ and assume $a\ll M$. We define $N\equiv M/a$. Consider the set \[ a\mathbb{Z}^2\cap[0,M]^2 = \mathbb{Z}^2\cap[0,N]^2. \] 
+
+This is a coarser grid which is capable of holding less Shannon information. We let $\mathcal{N}$ denote the set of all information states of this lattice. Note that $|\mathcal{N}|=2^{N^2}$.
+
+We now define a projection map \[ \pi:\mathcal{M}\to\mathcal{N}, \]
+
+where $\pi$ assigns binary values to squares in $\mathbb{Z}^2\cap[0,N]^2$ by taking the most frequent value in a corresponding $a\times a$ sub-grid of $\mathbb{Z}^2\cap[0,M]^2$. This is a mean field theory approach to approximating the finer information state with a coarser configuration.\newline
+
+Let $C\in\mathcal{N}$ be an information state on $\mathbb{Z}^2\cap[0,N]^2$. Let $q^2\ll N$ and $p\equiv qa$ be integers. Consider some $q\times q$ sub-grid  of $C$, along with its information content. That is, if we let $C_{ij}$ denote the square in the $i$-th row and $j$-th column of the lattice, with its binary value assigned, we can consider  
+
+\[ \{C_{ij}\mid i,j\in\{l,\dots, l+q\} \} = C\cap[l,l+q]^2, \] for some $l\in \{0,\dots, N-q\}$. We will call this portion of $C$'s information state a \emph{macroscopic idea}, or simply an \emph{idea}, denoted $\mathcal{I}$. 
+
+We now consider the preimage \[\pi^{-1}C.\]
+
+Specifically, we consider the $p\times p$ sub-grid of each of the information microstates $D_i\in\pi^{-1}C$ which $\pi$ projected onto $\mathcal{I}$. In each of the microstates in $\mathcal{M}$ which $\pi$ projected onto the information state $C\in\mathcal{N}$, there is a region of the lattice $D_i$ which $\pi$ mapped onto the idea $\mathcal{I}$. These regions in each of $D_i$ are not necessarily the exact same information microstate, but their overall structures were similar enough that when viewed from a coarser lattice, they appeared to be macroscopically equivalent. We call each of these sub-grids of each $D_i$––with their assigned information state––a \emph{physical representation}, or \emph{representation}, $\mathcal{R}$ of the idea $\mathcal{I}$. 
+
+\subsubsection{Well-definedness of Macrostates and Ideas}
+
+We can now ask the question: how many ways are there to \emph{represent} an idea $\mathcal{I}$ in the lattice $\mathbb{Z}^2\cap[0,M]^2$? First, given an $p\times p$ sub-grid of $\mathbb{Z}^2\cap[0,M]^2$, how many ways are there to represent $\mathcal{I}$ within that grid? Second, how many times can $\mathcal{I}$ appear within $\mathbb{Z}^2\cap[0,N]^2$? 
+
+Consider some $C\in \mathcal{N}$ such that the idea $\mathcal{I}_k$ is represented $\omega_k$ times in $C$, for $k=1,\dots, J$, where $J\in\mathbb{N}$ is finite. We now use these quantities to characterize $C$ as a macrostate, and further, define $C$'s \emph{statistical mechanic multiplicity} to be \[ \Omega(\mathcal{I}_1,\omega_1,\dots,\mathcal{I}_J,\omega_J) \equiv |\pi^{-1}C|. \] 
+
+The preimage of the projection $\pi$ defines an equivalence class on information microstates. That is, $\pi^{-1}C$ is a well-defined equivalence class for every $C\in\mathcal{N}$.
+
+*\emph{We should note that the numbers $\omega_k$ do not uniquely characterize each macrostate because they do not take into account the location of each idea representation in the lattice. Therefore, these numbers $\omega_k$ may not be useful for a well-defined definition of multiplicity; it may be better to simply say that the multiplicity is defined as $|\pi^{-1}C|$. However, conceptually, we still want to be able to characterize macrostates by the ideas that they contain, so I need a way to handle this. A possible solution is to only characterize a macrostate by a single idea which it contains, and not allow for multiple ideas to be represented in the same macrostate. In this scenario, ideas and macrostates are essentially the same thing. This may be a better approach, but a possible downfall of it is that it limits the complexity we are able to describe.}
+
+
+
+\subsection{Dynamics}
+\subsubsection{Assumption of a closed and isolated system}
+
+When a system reaches true thermal equilibrium, it will be too disordered for any complex ideas to be present. The structure required to represent an idea of any real substance––that is, an idea which takes $N$ bits to encode, where $N\gg 1$––is not likely to randomly occur. However, the dynamics of human communication that we are interested in do not occur on the timescales required for the system to reach equilibrium. That is; sophisticated communication within a population takes place over a smaller timescale than that which is required to reach equilibrium. One simple way we can see this is that a system which has reached thermal equilibrium has no memory of the details of its past states–it state is entirely described by the current macroscopic variables. Clearly, this is not the case for sophisticated human communication. Humans remember specific information about the past. 
+
+Humanity (and life in general) and the structures and institutions humans have built, maintain a massive degree of order for an extended period of time. These are extremely low thermodynamic entropy systems; they are very ordered and require a huge amount of Shannon information to describe. These are not structures which reach thermal equilibrium within the time-frame in which we are interested in describing their behavior. Humans are systems in a non-equilibrium steady state.
+
+Let's take a step back. When we say that two objects come into thermal equilibrium with each other, we do not expect that these two objects have blended into some single homogeneous material (at least not at common temperatures and energies). The objects are still distinct objects which are allowed to maintain their individual form and material composition. This is because there is not sufficient energy in the system to overcome the binding energy of the atoms. This shows up in the math of how we choose to characterize microstates. We choose some scale at which any order that is maintained at scales less than this does not concern us. For example, in the case of the Einstein solid, we allow the atoms to maintain their form––therefore, any order which is maintained at scales smaller than that of the atom's length scale does not concern us. Thus, when we characterize the microstates of the Einstein solid, we do not account for the state of every single quark and lepton in the material––we choose to count distinguishable microstates on only the scale which is good enough.
+
+So while humans are clearly far-from-equilibrium, steady-state systems, the effect of this is simply that it allows them to maintain their physical form for an extended period of time. This does not necessarily mean that the communication of ideas between humans demonstrates the same non-equilibrium behavior. The ideas in a person's mind (or a population's) can stay the same even though this person, when viewed as a biological system, is undergoing continuous energy fluxes.
+
+Therefore, for the time being, I will proceed with the simplifying assumption that the non-equilibrium nature of humanity simply has the effect of allowing humans to maintain their form and act as carries of complex ideas. We will then model the communication of ideas within a closed and isolated population with equilibrium thermodynamics. To do this, we will not account for the biological (non-equilibrium) aspects of humans when characterizing microstates, and only account for the structure of ideas which are being physically represented within that microstate.
+
+Normally in thermodynamics, the information about what order is maintained by the system is encoded by the physical model we are using to describe the system. I do not know what a realistic model of a human, or human population is, so I chose to use a lattice. This was a natural starting point to model information states since we are interested in how many bits of information are needed to represent each idea. Further, instead of encoding the information about what order is maintained in equilibrium into the physical model, I will simply set an upper bound on the entropy of sub-grids of our lattice.  This will have the effect of allowing complex ideas to form in these sub-grids. In other words, we are giving people the ability to form complex thoughts. It also presents us with the following question:
+
+\emph{Given that our system's entropy does not exceed some set threshold, which configurations are most likely to occur?}
+
+(Another piece of evidence that the spread of ideas can be modeled as being in a closed and isolated system is: qualitatively, the distribution of ideas within population seem to have the hallmarks of local thermal equilibrium: $(1)$ there is no explicit time dependence and $(2)$ there is a small spatial gradient; people near each other tend to generally have similar views––this is basically what culture is.)
+
+\subsubsection{Shannon Source Coding Theorem as the Thermodynamic Limit}
+The formal statement of the Shannon Source Coding Theorem is the following:
+
+Let \( X \) be a discrete memoryless source emitting symbols from a finite alphabet \( \mathcal{X} \), with probability distribution \( p(x) \) and entropy
+\[
+H(X) = -\sum_{x \in \mathcal{X}} p(x) \log_2 p(x).
+\]
+
+Then for any \( \varepsilon > 0 \), there exists a prefix-free code such that the average codeword length per source symbol \( L \) satisfies:
+\[
+H(X) \leq L < H(X) + \varepsilon,
+\]
+for sufficiently large block length \( n \).
+
+This theorem essentially states that any message which contains $n$ bits of information can be encoded with perfect efficiency (no information loss and arbitrarily small redundancy) as $n\to\infty$.
+
+When doing thermodynamics with macrostates specified by ideas, this combination of the Second Law and the Source Coding theorem tells us that we can assume ideas are being represented as efficiently as possible. This is because the most efficient encoding, or representation, of an idea, will use up the least amount of physical ``symbols", and thus restrict the least amount of physical degrees of freedom of the system. That is, if we impose a requirement on a system that it must contain a representation of an idea, then the representation which maximizes the system's entropy is the most efficient representation.
+
+This tells us that in practice, we only need to consider the efficient encoding of an idea, rather than every possible encoding, when computing (or approximating) multiplicities, since it is really just the ratio of multiplicities that matters.
+
+\subsubsection{EVIDENCE FOR THE PRIMARY CLAIM: The Canonical Ensemble using Landauer's Principle}
+\textbf{Part 1:}
+
+Consider a large population $A$, which will play the role of a reservoir, and a small population $B$, which will play the of the system. We will model these populations microstates and macrostates with lattices of dimensions $M_A\times M_A$, $N_A\times N_A$, $M_B\times M_B$, and $N_B\times N_B$, respectively. Again, $N_i = M_i/a$. We assume $M_A\gg M_B$. We also assume that the internal energies satisfy $U_A\gg U_B$. We also assume that $A$ and $B$ have some effective temperature $T_\text{eff, A}$ and $T_\text{eff, B}$. We consider ideas which take up a $q\times q$ subgrid of a macrostate, and a $p\times p$ sub-grid of microstate. For simplicity, we will assume that the reservoir $A$ contains only a single idea $\mathcal{I}_A$, which has a size of $n$ bits. There are $N_A^2/q^2$ places in $A$ to represent an idea, so we will assume that each of these places contain a representation of $\mathcal{I}_A$.
+
+We impose  an upper bound on the entropy on each $q\times q$ subgrid of $A$ and $B$ to be 
+
+\[ S_\text{max} = k_B\ln{2^{q^2-n}} = q^2k_B\ln{2} - nk_B\ln{2}. \]
+
+We now ask what macrostate of $B$ is most likely to occur, given that the entropy threshold is respected. Clearly, this will also be an idea of size $n$ bits, since representing an idea of size $u>n$ bits would result in lowering the entropy of the system. That is,
+
+\[ S_{\text{subgrid},u} = k_B\ln{2^{q^2-u}} < k_B\ln{2^{q^2-n}} = S_\text{max}. \]
+
+Further, any idea of size $u<n$ bits would violate the entropy threshold. Thus, we now ask which idea of size $n$ bits maximizes the entropy of the the combined system $AB$. From a simple combinatorial argument, this is clearly $\mathcal{I}_A$.
+
+\textbf{Part 1.1:} Another way to see this is from a more information-theoretic argument. We showed above that given the constraint that an idea is represented within a system, the combination of the second law of thermodynamics and Shannon's source coding theorem implies that the most efficient encodings/representations are the ones that will occur. We can apply a similar (though not exactly the same) argument here. 
+
+We know that the reservoir $A$ contains $N_A^2/q^2$ copies of $\mathcal{I}_A$. The most efficient encoding of $A$ will not contain $N_A^2/q^2$ explicit copies of $\mathcal{I}_A$. Instead it will likely be something like: a single explicit copy of $\mathcal{I}_A$ and then a few bits which state how many copies occur. For example, if $B$ contains the message "I love music" $5$ times, then it is much more efficient to encode this as: 
+
+\[\textit{A contains: ``I love music." 5 times.}\]
+
+than as:
+
+\[ \textit{A contains: I love music. I love music. I love music. I love music. I love music.} \]
+
+Now consider encodings of the combined system $AB$, where $B$ contains an idea $\mathcal{I}_B$. If $\mathcal{I}_B=\mathcal{I}_A$, then we can simply encode $AB$ as 
+
+\[\textit{AB contains: ``I love music." 6 times.}\]
+
+On the other hand, if $\mathcal{I}_B\neq\mathcal{I}_A$, then our most efficient encoding of $AB$ requires that we explicitly $\mathcal{I}_B$ as well (or at least the portion of $\mathcal{I}_B$ which differs from $\mathcal{I}_A$). This requires more bits to be used to encode $AB$. Since we know that the second law favors the most efficient encodings, we can compare the size of the most efficient encodings of  systems to determine which leads to the maximum entropy.\newline
+
+\textbf{Part 2:}
+
+Above in part $1$, we argued the primary claim that we are interested in showing: that the communication of ideas leads to equilibrium. This equilibrium state defines our ground/relaxed state of $AB$. We now consider excited states. These are the states were $B$ is not in equilibrium with $A$. We will use Landauer's Principle to motivate our Boltzmann factors which describe these states.
+
+If $A$ and $B$ are not in equilibrium, we need to characterize how far out of equilibrium they are. We do this by considering how many bits $\mathcal{I}_A$ and $\mathcal{I}_B$ differ by. Thus, we let the Hamming distance be our metric $d$ on $\mathcal{N}$ (or similarly, on individual ideas). The Hamming distance is simply the number of binary digits by which the two states differ. By Shannon's source coding theorem, this is also a metric on the number of bits that the two states differ by (?).
+
+There are $(N_A^2 + N_B^2)/q^2$ ``spots" which can hold an idea in $AB$. Let $d(\mathcal{I}_A,\mathcal{I}_B) = h$; that is, $\mathcal{I}_A$ and $\mathcal{I}_B$ differ by $h$ bits, where $h\leq n$. We calculate the entropy of $AB$, denoted $S_{AB}$, with our definition of multiplicity was given above to be
+\[ \Omega_{AB}(\text{macrostate}) = |\pi^{-1}C|, \]
+where $C\in\mathcal{N}_{AB}$ is a macroscopic information state of $AB$.
+
+For every bit that $\mathcal{I}_A$ and $\mathcal{I}_B$ differ by, we reduce $\Omega_{AB}$ by a factor of $2$. Therefore,
+
+\[ S_{AB} = k_B\ln{2^{(q^2 - n)(N_A^2+N_B^2)/q^2 - hN_B^2/q^2}} = k_B(N_A^2+N_B^2)\ln{2} - k_B\frac{N_A^2+N_B^2}{q^2}n\ln{2} - k_B\left(\frac{N_B}{q}\right)^2h\ln{2}. \]
+
+The power of $2$ within the logarithm is because we must restrict $n$ bits $(N_A^2 + N_B^2)/q^2$ times within $AB$ and then $h$ bits an addition $n_B^2/q^2$ times only within $B$. We can use this to define the Boltzmann factors. Let $C,C'\in\mathcal{N}_{AB}$ be two macrostates such that $A$ and $A'$ contain only copies of $\mathcal{I}_A$, and $B$ and $B'$ contain ideas $\mathcal{I}_B$ and $\mathcal{I}_{B'}$, such that $d(\mathcal{I}_A,\mathcal{I}_{B}) = h$ and $d(\mathcal{I}_A,\mathcal{I}_{B'}) = h'$. In the derivation of Boltzmann factors, the ratio of probabilities between states is found to be
+
+\[ 
+\begin{split}
+    \frac{P(C)}{P(C')} = \frac{\Omega(C)}{\Omega(C')} & = e^{[S(C) - S(C')]/k_B} \\
+    & = e^{[-k_B(N_B/q)^2h\ln{2} + k_B(N_B/q)^2h'\ln{2}]/k_B} \\
+    & = \frac{e^{-k_B(N_B/q)^2h\ln{2}/k_B}}{e^{-k_B(N_B/q)^2h'\ln{2}/k_B}} \\
+    & = \frac{e^{-\beta k_BT_\text{eff,A}(N_B/q)^2h\ln{2}}}{e^{-\beta k_BT_\text{eff,A}(N_B/q)^2h'\ln{2}}}
+\end{split}
+\]
+
+and thus we have the Boltzmann factor
+
+\[ P(C_i) \propto e^{-\beta(k_BT_\text{eff,A}(N_B/q)^2h\ln{2})} = e^{-\beta\epsilon_i}, \]
+
+where \[ \epsilon_i = k_BT_\text{eff,A}(N_B/q)^2h\ln{2} \text{ joules }\]
+
+is found to be the energy predicted by Landauer's Principle. That is, this is the lower bound on the energy required to erase, or ``realize", $h(N_B/q)^2$ bits of Shannon information.
+
+Landauer's principle provides the theoretical lower limit on how much energy it takes to erase $1$ bit of information in a system in thermal equilibrium with a reservoir at temperature $T$. ``Erase" is perhaps not a very illuminating word to understand what is meant here. What it really means by erase is to remove $1$ bit of uncertainty, or complexity. By erasing that bit from the system, we actually learn what the state of that bit is. Thus, we are imposing a constraint on the state of the system by forcing it to pick between $2$ possible binary states and thus lowering its entropy by $k_B\ln2$. In order to satisfy the second law, it follows that $k_BT\ln2$ joules of energy must be dissipated from the system as heat. Conservation of energy also tells us that at least this much energy must have been used initially to do work, in order to lower the system's entropy. Therefore, Landauer's principle tells us the lower limit on how much energy it takes to lower a system's entropy, or form/construct that object. 
+
+One thing I'm not quite sure about is how to interpret the energy levels $\epsilon_i$ in our system $AB$ above. Landauer's limit does not say that the information itself contains that energy, which is normally what energy levels signify. It tells us how much energy must be used in order to construct the system $AB$ in a state where $A$ contains copies of $\mathcal{I}_A$ and $B$ contains copies of $\mathcal{I_B}$ such that $d(\mathcal{I}_A, \mathcal{I}_B)=h$. However, we can also see that the only change in our system, when deciding what $\mathcal{I}_B$ is, occurs in $B$. It also makes intuitive sense that the system which is ``disagreeing" with the reservoir would be the ones doing the work. One possible interpretation is the following: 
+
+We have been interested in studying physical representations of ideas only because they are an observable manifestation of the ideas within the populations minds'. Therefore, we could interpret our result as saying that $\epsilon_i$ is the amount of energy that population $B$ would need to use in order to disagree with $A$ by $h$ bits. This agrees with the generic interpretation of Landauer's principle. We are assuming that $B$ has expressed there disagreement in some physical manner.
+
+\textbf{Takeaway:}
+
+The key insight here is that it is much entropically and energetically cheaper for the entire closed system to make a copy of an idea than it is to form a new idea. It is much easier for the receiver of the message to simply totally agree or totally disagree with the population than it is to develop their own nuanced opinions (the cause of disagreement is because there is a bijection from the set of true logical statements to the set of false logical statements defined simply by negating the statement. Note that if the system simply completely disagrees with the reservoir, then $h=1$, where this single flipped bit represents the negation of $\mathcal{I}_A$. Clearly, $h=1$ is the lowest excited state. Nuance takes energy). Also, it is easier for the population with the initial information to spread their idea, rather than hold their form by keeping it to themselves. We all know the feeling of learning information and wanting to tell it to someone else.\newline
+
+\subsubsection{Heat, Work, And Ergodic Theory}
+In regular thermodynamics, when we consider the Canonical ensemble, equilibrium is attained by the transfer of heat. This is an energy flow which increases the entropy of the system. We can see in our case that the communication of ideas is the energy flow that increases entropy and brings equilibrium. Therefore, we should be able to characterize these physical representations of ideas as heat. Music at bars. Graffiti on walls. Protests in the streets. Conversations. If you care about something enough, you'll talk about it. Talking is radiation.
+
+In other situations, I am curious if some communication can be characterized as work. While it would take some working to apply to this context, there is a theorem in ergodic theory called Sinai's Factor Theorem. From my understanding, it says that any measure-preserving dynamical system can be decomposed into an invertible map and a Bernoulli shift (the part which generates entropy). Entropy is a measure, so if we can model specific communication processes as dynamical systems, this would be a way of characterizing the physical representations of ideas as heat or useful energy. Intuitively, I would guess that this has something to do with not only the ideas and opinions that a population has, but with their emotional state as well. We could then characterize communication processes in the same way that we characterize physical processes: as adiabatic, isobaric, isothermal, etc. 
+
+
+
+\section{Issues and Places for Development}
+\begin{enumerate}
+    \item I am open to guidance regarding my method for handling the non-equilibrium nature of human populations. The ``entropy threshold" is placeholder for a better model. I am also open to guidance regarding my assumption that communication, even in the simplest cases, can be modeled with equilibrium thermodynamics. I have basically assumed that the biological/physical state of humans is independent of the ideas in their minds. I doubt that this is true. I think it is possible that what I have argued above is a first approximation, or a lower bound, and considering the physical processes in our bodies would add on important higher order corrections.
+    \item I need to define a realistic model of physical space in place of the lattice $\mathbb{Z}^2\cap[0,M]^2$. One idea is to start with a model for associative memory, the Hopfield network, which is isomorphic to the Ising Model in the zero temperature limit. Another idea is to use something like a reinforced random walk, which gives the system some level of memory, making it easier for the system to be in a state it has previously been in. It also may make sense to define a population of rational actors, as done in game theory, giving the population the ability to think. However, this may weaken the power of my model, since it is a bit circular in its logic; I am hoping to \emph{derive} the behavior of  macroscopic thought from as few assumptions as possible. If this behavior is a consequence of only thermodynamics, this is a much more powerful and general model.
+    \item The question of determining which physical messages ``mean" the same thing comes down to defining a sophisticated projection map $\pi$. I believe that this is a natural use case for Natural Language Processing Algorithms. Initially, I was thinking that this was primarily a combinatorial problem which should be informed by neuroscience, psychology, and linguistics, but I think NLP algorithms will be better at determining which messages have similar meaning than any analytic method would.
+    \item The reservoir + system combined system could be interpreted in a few different ways. It basically models situations where there is only a flow of information in one direction. $(1)$ The most obvious interpretation is to think of the reservoir simply as a much larger population than the system. In this case, we are modeling how groups of people are influenced by the mainstream culture. $(2)$ In a situation like a professor lecturing to a class, where the professor knows a lot more information about the subject than the students, the professor is essentially a reservoir of knowledge. Over time, the professor is passing on information to students, who are gaining this knowledge and therefore are becoming more similar to the professor (at least in the context of that subject). The students learn from the professor but the professor is not learning anything from the students, and therefore the professor's information macrostate is essentially fixed. $(3)$ I also curious if the reservoir could also model a population's memories. Memories (old habits, traditions, biases, etc) can sometimes act as a sort of inertia. When we are thinking of new ideas and opinions, we do so in the context of our memories. 
+    \item Formalize the equilibrium arguments in section $2.2.3$ in the language of information theory. The primarily assumption of the Microcanonical ensemble in statistical mechanics (that all microstates are equally likely and there are not large spatial correlations between particles) is a very similar statement to the hypothesis of Shannon's source coding theorem: ``Assume we have $N$ i.i.d random variables\dots". Thus, it seems natural to cast the arguments I have made above into the language of information theory and statistics, where we can consider information sources as random variables. I am curious if it is possible to derive an equilibrium condition analogous to ``systems have equal temperature at thermal equilibrium" in terms of the mutual information or conditional entropy of the system $AB$. For example, something like: ``Communication is an equilibrium process which tends to the minimization of conditional entropy / maximization of mutual information."
+    \item The interpretation of the energy levels $\epsilon_i$.
+\end{enumerate}
+
+
+
+\subsubsection{Temperature}
+\subsubsection{Engines}
+
+How many conversations does it cost to actually change something? Following our characterization of parts of communication as heat flow vs. mechanical work, the natural next step is to apply engine theory and study how efficient different modes of communication are at actually getting things done, and where they naturally arise. How many protests, comedy-bits, and songs must be made about a topic until it changes a law?
+
+\subsubsection{Phase Transitions}
+
+\subsection{Lastly\dots}
+The famous painter, Edward Hopper, was once quoted saying ``If I could say it with words, there would be no reason to paint." 
+
+I am interested in the dynamics of \emph{it}.
+
+\end{document}
+
+
+
+
+
