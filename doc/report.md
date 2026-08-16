@@ -1,0 +1,146 @@
+# Statistical Physics of Communication
+
+## Introduction
+
+> I will argue that the communication of ideas within a human population obeys the same dynamics as those of physical systems evolving towards thermal equilibrium. It is not possible to use physics to describe some abstract notion of an idea. However, the way humans interact with ideas is through physical representations of them––written and verbal language, art, music, etc. This is now in the realm of real, observable physics.
+>
+> Statistical physics is the theoretical framework that we will operate within. We will use methods from information theory and representation learning as computational tools.
+
+I am interested in the dynamics of ideas. It is not possible to use physics to describe some abstract notion of an idea. However, the way humans interact with ideas is through physical representations of them––written and verbal language, art, music, etc. This is now in the realm of real, observable physics.
+
+I argue that statistical mechanics and information theory are the correct tools to describe the dynamics of the communication of ideas within human populations. Information theory does a good job at describing the containers of information, but does little to describe the dynamics of it. This is where statistical mechanics becomes useful. My primary claim is that the communication of ideas within a human population obeys the same dynamics as those of physical systems evolving towards thermal equilibrium. 
+
+Statistical physics is the theoretical framework that we will operate within. Information theory and the theory of representation learning are the computational tools we will use to cast the problem of understanding the dynamics of natural language into a problem that statistical physics can grapple with.
+
+### Literature Review
+
+It is by no means a new idea to attempt to model opinion dynamics with some sort of diffusive model in analogy with thermodynamics. Many  attempts to do so have been made with varying degrees of success; a good primer on the field of *sociophysics* is [Castellano](https://arxiv.org/abs/0710.3256). Problems of this nature have been approached from different angles, but a large class of models which attempt to do generally the same qualitative thing as we will take on the core structure of the Ising Model. While qualitatively pointing in the right direction, these models often possess at least one of the two following issues:
+
+1. Models often vastly simplify the structure of an *opinion state*. Understandably, massive simplifying assumptions are made about what an opinion can be in order for these opinion states to fit into the physics models, resulting in an enormous amount of the nuance of human thought being lost.
+
+2. Models are often mere analogies to statistical physics rather than truly being grounded in first principles. 
+
+We will attempt to present a theoretical framework along with computation tools that addresses both of these issues. 
+
+
+## Theory
+
+### Foundations in Statistical Mechanics
+
+> We will present a first principles derivation that only assumes the microcanonical ensemble of equilibrium statistical mechanics. We will describe the microstates of a system by the natural language that appears within the system.
+
+We will start simply with a faithful reading of basic equilibrium statistical mechanics. Statistical mechanics relies on the assumptions of the microcanonical ensemble. Thus, all we need is a closed ergodic system and set of equally likely microstates. Before proceeding, we now consider these microstates for a moment. Let us imagine that we have a physical system which natural language somewhere exists within; for example, there may be books, CDs, and artwork all within the bounds of the physical system. Of course in standard statistical mechanics the existence of the actual words written and ideas represented in these carriers of language would be of no interest; we would choose to describe the system by the standard physical quantities of interest. But the hypothesis of the microcanonical ensemble makes no requirement of this––we are free to choose any description of the system that we like, so long as we have a closed ergodic system with equally likely microstates.   
+
+In condensed matter theory, it is common to transform the description of the physical system from its standard description to some other basis. As long as there is a bijection between physical space and the space you choose you describe the system with, the same counting argument that the microcanonical ensemble relies on holds. A simple example is Debye's theory of solids, where by transforming the description of the solid's atomic lattice from position space to momentum space, we find collective excitations of the system known as phonons.
+
+Thus, in our search for a theory of dynamics of ideas, we will define the microstates of a system as exact *natural language information state* of the system. What are the exact words and syntax that appear within the physical system? These words, token, syntactical units, are a perfectly valid physical property of the system. 
+
+Note that this approach has addressed both of the shortcomings noted in the literature review. We have made no attempt to model human brains. No assumptions about the mechanisms of the information sources. Rather, we only concern ourselves with the physical medium that communication transpires on. We will model the "bulletin board", the "townhalls", the Twitter threads, the songs, the platforms on which ideas are represented. We will model evolving dynamics of the states of these platforms. Thus, we have ensured that the theory only makes claims about physical observables.
+
+Thus, suppose we have an arbitrary closed and isolated system that can be modeled by the source $X^n\sim\operatorname{Unif}(x^n)$ (or an ergodic stationary stochastic process $\mathcal{X}$). 
+
+### Scaling
+
+### Physical Symmetry as the Syntactic Representation vs. Semantic Meaning of Ideas
+
+> The only way we can say what an idea *means* is by observing what it *does*. We will find that we can characterize this difference between the syntax of natural language and the meaning of that natural language as a problem of physical symmetry that scaling physics is equipped to handle. Messages that have the same meaning will define semantic equivalence classes. These equivalence classes are perfectly valid macrostates.
+
+The only way we can say what an idea *means* is by observing what it *does*. How do people react to being given this piece of information? Information has causal ability; the future actions that a person takes are dependent on the information they are given. If we have two messages $x_1$ and $x_2$ and it does not matter whether a person is sent $x_1$ or $x_2$, because their future actions will be exactly the same in both cases, then these messages mean the same thing to that person. That is, the state and dynamics of this person are invariant to the exchange of $x_1$ for $x_2$. This is a physical symmetry of this person in the same way that spherical objects are invariant to rotations in O$(3)$. If you care about something, it has the ability to change what you do. If you don't care about something, your state is invariant to it. It follows that the dynamics of ideas should only depend on what those ideas mean and not on how they are represented.
+
+Therefore, we start with "microscopic" natural language information states. One thing to notice is that the syntax of a coarse scale defines the semantic equivalence classes of a fine scale. Thus, we will look for emergent macroscopic symmetries of the system by integrating out the details of the specific syntax of the natural language information state. We will call these equivalence classes of emergent symmetries *ideas*. Any microscopic messages $x_1$ and $x_2$ which are collapsed onto the same idea in the process of coarse graining are *representations* of the same idea. 
+
+Again, we should reinforce the point that we are respecting the fundamental physics in this approach. Thus far, we have chosen a valid microscopic description of a system which fulfills the hypothesis of the microcanonical ensemble. If we are able to find emergent symmetries of this system through a scaling procedure, this is a perfectly valid physical symmetry of the system; the system's macroscopic dynamics and causality are invariant to these microscopic fluctuations.
+
+The next question that arises is that of energy. How do we characterize the scale of the system? Information theory gives us tools to talk about the complexity, or information resolution, of the system. But how does this information scale map to a physical scale that statistical mechanics knows how to handle?
+
+### Landauer's Principle: The Energy Scale defines the Information Scale
+
+> Landauer's Principle implies that the energy scale of the system defines the information scale of the system and will allow us to enumerate energy levels of natural language microstates.
+
+The power of statistical mechanics is that it allows us to ignore a massive amount of degrees of freedom and only worry about a very small number of scalar quantities to sufficiently characterize the behavior of the system at some scale of interest. The hard work in our case  is that we are trying to describe how systems reach equilibrium with eachother even with extremely complex macrostates. Even after integrating out the details of the specific physical representation of ideas in the system, the structure of just the idea alone is still extremely high dimensional. Thus we need to consider how to characterize a macroscopic scale of the system. 
+
+Luckily, statistical mechanics already allows for this. When we say that a system has reached thermal equilibrium with another system or heat reservoir, what we really mean is that it has reached as much of an equilibirum as is possible, given the system's energy scale. At everyday temperatures, if we say that two metals have reached thermal equilibrium, we do not expect that they have blended together into some soup of quarks and leptons––of course we allow atomic structure to remain intact. This is because the energy scale of the system has not overtaken the binding energy of the atoms. 
+
+We now look at an interesting piece of physics: Landauer's limit. Landauer's limit states that if we have a system in thermal equilibrium with a heat bath at temperature $T$, then it takes at least $k_B T N \ln 2$ joules to erase $N$ bits of Shannon information in the system. Erasing $N$ bits is equivalent to imposing the state of the systems by $N$ bits of  information. 
+
+Information theory is useful for describing the information capacity of some container of information. Landauer's limit tells us that the capacity of a physical system to hold information is determined by the system's energy. Thus, the more energy in a system, the more information it is able to hold. The energy scale of the system also defines the information scale of the system. 
+
+We now go back to our interpretation of our microstates. Recall, we are modeling the physical space that contains representations of ideas rather than the minds which are generating and holding those ideas themselves. Thus, we interpret the energy of the system as the energy required to construct that system from some reference state. 
+
+We also must make the important point that Landauer's principle gives a lower bound on the energy required to impose $N$ bits of information, not an exact formula. Thus, when considering the energy levels of our systems, Landauer's limit will likely not provide these directly. Rather, our discussion about Landauer's limit serves as conceptual evidence for the claim that the energy scale defines the information scale of the system; the fact that this lower bound even exists points to the concept that physically expressing ideas costs energy. This is an important point in bridging the languages of statistical physics and information theory, bringing them both to a common context. More research will need to be done to find the true energy levels of our natural language systems.
+
+## Our Research Statement
+
+> The work to be done is finding a good coarse-graining method. We will look for lossy compression schemes which capture the semantic meaning of natural language and disregard the details of syntatic representation, phrasing, etc. We propose the information bottleneck method and Encoder LLMs as projection functions to map natural language microstates onto semantic macrostates.
+>
+> After this, we will look for formalize this scaling procedure in terms of Ginzburg-Landua Theory and Renormalization Group Theory.
+
+We now see that the problem of finding a dynamical theory to describe the flow of semantic information within a population comes down to answering two problems:
+
+1. We are faced with the same problem as is common in condensed matter theory: we need to transform our microscopic description of the system into a useful space to look for collective excitable modes.
+
+2. We need to find a coarse-graining method which will reveal emergent macroscopic symmetries which define semantic equivalence classes
+
+These two problems are where the research effort will go. After addressing these, we will look to formalize our arguments in terms of existing scaling physics theory: renormalization group theory and Ginzburg-Landau theory.
+
+### Microstates
+
+We now consider a useful microscopic description of the system. We start with the *natural language information state*.  
+
+#### Shannon Source Coding Space
+
+Information space: 
+We now transform from describing this system with the space of physical space, $\Omega$, to describing it with lossless encodings $C(x)$. We know that this is a bijection. 
+
+note about thermodynamic limit
+
+#### Relevant Microstates
+
+We look for enumerable microstates of relevant information, akin to the philosophy of the IB method ? 
+
+### Coarse-Graining Methods
+
+### Analytic Methods
+#### Rate Distortion Theory
+
+Before diving into the Information Bottleneck Approach, we will take the brief sidebar of a simpler case: rate distortion theory. This simpler case will motivate the more general information bottleneck approach. 
+
+We have some source $X^n$ which we wish to represent the samples $x^n$ with codewords of no more than $nR$ bits. 
+
+We can characterize the compression process by $R(D)$. 
+
+Lossy compression is projecting the source sequences $x^n$ onto a lower dimensional space of $nR$-bit sequences. Sequences $\tilde{x}^n\in X^n$ that are jointly typical with $x^n$ will be projected onto the same equivalence class, or representation, $\omega\in\{1,...,2^{nR}\}\subset\mathbb{Z}$. (so is each representation just a jointly typical set?)
+
+Each equivalence class has a cardinality of roughly (?) $2^{n(H(X)-R)}$. 
+
+#### Information Bottleneck Method
+
+The information bottleneck (IB) method is a generalization of rate distortion theory's approach to lossy compression. The IB method also takes a stark turn away from a pillar of standard information theory: the IB method concerns itself with the actual information content. Rather than trying to reconstruct the original signal $X$ as faithfully as possible, IB looks to only keep the information that is *relevant* to some other information source $Y$ by constructing a lossy representation $T$ of $X$. 
+
+The IB method proposes the optimization problem: find T that minimizes
+
+$$I(X;T) - \beta I(T;Y).$$
+
+### Computational Method
+
+#### Representation Learning and Mechanistic Interpretability
+
+At a high level, we can view LLMs as algorithms that look for and learn *semantic meaning* in data. The training of LLMs––specifically encoder models like BERT, an encoder built with the transformer architecture as well as autoencoders and VAEs, to name a few––is the process of the model learning a low-dimensional internal representation of the training data that captures the important structure in the data for making predictions. When given the high dimensional training set, models learn an optimal low-dimensional "latent space" of these representations. We may take the view that the latent space of a model is a space of macrostates. 
+
+There is a vast amount of research being done in the fields of representation learning and mechanistic interpretability to understand how this process takes place. A few things of note: 
+
+* [The Platonic Representation Hypothesis](https://arxiv.org/abs/2405.07987), proposed by a group out of MIT in 2024, makes the observation that different models, trained on different mediums of data, appear to be converging to what the team calls a "shared statistical model of reality." The claim is that the different training sets which represent reality are akin to different "shadows of the wall" from Plato's allegory of the cave, all created by the same true reality which deep neural networks are converging on. In particular, this is found in the convergence of the structure of these models' latent spaces. Under ideal circumstances, the induced similarity kernel on the latent spaces that these models learn during training is converging to the same function:
+
+  $$K(x_i, x_j) = \text{PMI}(x_i, x_j) = \log\frac{p(x_i, x_j)}{p(x_i)p(x_j)},$$
+
+  the pointwise mutual information between sequences $x_i$ and $x_j$. For example, a model of one architecture that is trained on natural language and a model of another architecture that is trained on images both independently come to the understanding that "cat" and "dog" are more similar concepts than "dog" and "book". 
+
+* In our search for coarse-graining methods, this may suggest that there may be information-theoretic equivalence classes that exist in nature, independently of any specific model. Thus, we may be able to classify LLMs as symmetry-discovery machines.
+
+Lastly, collectively our definition of microstates and scaling methods address the issue of capturing the nuance of human communication in a physical theory. We can see this in the fact that the level of detail about information states that the theory is able to handle is only limited by our ability to collect data and our computational tools for coarse-graining; the theory itself is able to handle arbitrarily complex information and idea states. 
+
+
+
+
+
+
