@@ -37,7 +37,7 @@ Thus, in our search for a theory of dynamics of ideas, we will define the micros
 
 Note that this approach has addressed both of the shortcomings noted in the literature review. We have made no attempt to model human brains. No assumptions about the mechanisms of the information sources. Rather, we only concern ourselves with the physical medium that communication transpires on. We will model the "bulletin board", the "townhalls", the Twitter threads, the songs, the platforms on which ideas are represented. We will model evolving dynamics of the states of these platforms. Thus, we have ensured that the theory only makes claims about physical observables.
 
-Thus, suppose we have an arbitrary closed and isolated system that can be modeled by the source $X^n\sim\operatorname{Unif}(x^n)$ (or an ergodic stationary stochastic process $\mathcal{X}$). 
+Thus, suppose we have an arbitrary closed and isolated system that can be modeled by the source $X^n\sim\mathrm{Unif}(x^n)$ (or an ergodic stationary stochastic process $\mathcal{X}$). 
 
 ### Scaling
 

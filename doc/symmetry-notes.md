@@ -2317,7 +2317,7 @@ Saxe et al. (2018) showed:
 
 In the hard IB, the encoder is a deterministic map $T(x)$. The optimal assignment is:
 
-$$T(x) = \underset{t}{\operatorname{argmin}} \; D_{\text{KL}}\big(p(Y|X=x) \;\|\; p(Y|T=t)\big)$$
+$$T(x) = \underset{t}{\mathrm{arg\,min}} \; D_{\text{KL}}\big(p(Y|X=x) \;\|\; p(Y|T=t)\big)$$
 
 This is a Voronoi partition in the space of conditional distributions over $Y$, with KL divergence as the distance. Each macrostate $t$ has a "center" $p(Y|T=t)$, and all $x$ values whose predictive signature $p(Y|X=x)$ is closest to that center are assigned to it.
 
