@@ -22,6 +22,13 @@ These are general guidelines for how the repo owner wants Claude to work here. T
 
 - **Go slow. Do exactly what is asked — nothing more, nothing less.** Start simple; add complexity incrementally. Do not jump ahead, over-build, or try to do everything in the first pass. Suggestions for additional or future experiments are welcome, but **describe them separately — do not implement them unprompted.**
 
+## File editing rules (STRICT — read before touching any doc)
+
+- **NEVER edit `doc/report.md`. No exceptions.** This is the owner's report; they are highly selective about what it says and how. **All edits to `report.md` are made manually by the owner.** Claude may *read* and *quote* it, but must never modify it — not even to fix a typo, and not when told to "update doc" (that instruction never includes `report.md`). If a change to it seems warranted, describe the suggestion in chat and let the owner make it.
+- **NEVER edit `doc/original/main.tex` (or the `.pdf`).** This is legacy and is preserved as-is, unchanged. Read-only.
+- **Do NOT edit `doc/theory-notes.md` unless the owner names it explicitly.** It is a log of past conversations for the owner's reference, not a maintained document. A generic "update doc" does **not** include `theory-notes.md`; only edit it when the owner lists it by name.
+- **New doc files created during the work (e.g. an experimental-design doc) are Claude's to help maintain.** When the owner says something like "update doc," that refers to these newly-generated docs — never `report.md`, never `main.tex`, and never `theory-notes.md`.
+
 ## Layout
 
 - `doc/report.md` — **the canonical theory reference: the most up-to-date and comprehensive statement of the theory** (and known to be incomplete). **Read this first.** The `> blockquotes` at the start of each section are the thesis of that section. The other two docs are supplemental to this one.
