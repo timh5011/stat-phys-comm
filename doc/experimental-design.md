@@ -8,9 +8,9 @@ Our default research strategy is to begin with the simplest possible model — e
 
 ## Table of Contents: Pillars of the experiment
 
-* [Characterizing the encoder model](#characterizing-the-encoder-model)
+* [Characterizing the Encoder Model](#characterizing-the-encoder-model)
   * [STSb evaluation](#stsb-evaluation)
-* [Getting the proper datasets; datasets will mimic the microcanonical and canonical ensemble](#getting-the-proper-datasets-datasets-will-mimic-the-microcanonical-and-canonical-ensemble)
+* [Getting the Proper Datasets: Datasets will mimic the microcanonical and canonical ensemble microstates](#getting-the-proper-datasets-datasets-will-mimic-the-microcanonical-and-canonical-ensemble-microstates)
   * [Stance: equilibrium, not non-equilibrium steady state (for now)](#stance-equilibrium-not-non-equilibrium-steady-state-for-now)
   * [What "a real community" means here](#what-a-real-community-means-here)
   * [Microstate and the two-ensemble construction](#microstate-and-the-two-ensemble-construction)
@@ -21,14 +21,14 @@ Our default research strategy is to begin with the simplest possible model — e
   * [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)
   * [The encoder is an instrument, not part of the physics](#the-encoder-is-an-instrument-not-part-of-the-physics)
   * [Meaning as a causal/predictive equivalence](#meaning-as-a-causalpredictive-equivalence)
-* [The validation plan; what observables will we look for and how do we determine success?](#the-validation-plan-what-observables-will-we-look-for-and-how-do-we-determine-success)
+* [The Validation Plan: What observables will we look for and how do we determine success?](#the-validation-plan-what-observables-will-we-look-for-and-how-do-we-determine-success)
   * [Partitioning the latent space: defining macrostates and choosing a scale](#partitioning-the-latent-space-defining-macrostates-and-choosing-a-scale)
   * [Encoder loss as an instrument-side resolution floor](#encoder-loss-as-an-instrument-side-resolution-floor)
   * [Primary observable](#primary-observable)
   * [Staging: what can be tested before the energy problem is solved](#staging-what-can-be-tested-before-the-energy-problem-is-solved)
   * [Open problems (deferred, developed separately in the theory)](#open-problems-deferred-developed-separately-in-the-theory)
 
-## Characterizing the encoder model
+## Characterizing the Encoder Model
 
 Before testing our hypothesis, we must understand the tools we are using. We must understand the performance of the encoder model we use to define the projection.
 
@@ -53,7 +53,7 @@ Scope and limits of this measure:
 * "Semantic similarity" here is operationalized as averaged human annotation, not as any causal or information-theoretic definition of meaning.
 * It reports agreement in *ranking* only, and says nothing about the multiplicity / equivalence-class structure that is the object of the validation plan below.
 
-## Getting the proper datasets; datasets will mimic the microcanonical and canonical ensemble
+## Getting the Proper Datasets: Datasets will mimic the microcanonical and canonical ensemble microstates
 
 We hope to find a dataset which fulfills the assumptions of the microcanonical and canonical ensemble. This may be difficult to find and thus we may need to loosen this requirement. The purpose of this section is to state, as precisely as we currently can, the assumptions and constraints a dataset must satisfy to be usable — and, just as importantly, to **name every approximation** we are making rather than hand-waving past it.
 
@@ -132,7 +132,36 @@ Whether the proxy is faithful rests on two conditions — named approximations, 
 
 Consistent with the start-simple methodology, we begin with a general-purpose encoder that at least broadly agrees on semantic similarity and build toward community-adapted / predictive maps only as needed. Two related issues are noted and deferred: encoder sensitivity to *style vs. meaning* (an encoder-choice question), and *receiver-relative* meaning (different members projecting differently — eventually a per-subsystem projection / symmetry group).
 
-## The validation plan; what observables will we look for and how do we determine success?
+#### Equivalence is defined at a macroscopic scale — we observe, we do not model microdynamics
+
+An essential qualification: **semantic equivalence always means equivalence at a chosen macroscopic scale**, exactly as in the passage from statistical mechanics to thermodynamics. We adopt predictive equivalence as the *definition* of "same meaning," but we do **not** intend to reconstruct the microscopic causal chain of messages. Coarse-graining that microscopic detail away is the entire point of doing statistical mechanics — the same reason thermodynamics exists. The methodology is therefore **observational and count-based**: we record which macrostates occur (and, later, which co-occur), without attempting to explain *why* those correlations arise.
+
+This clarifies how we borrow from the two nearest frameworks — both worth keeping in view, and their key difference is loss:
+
+* **Computational mechanics — *lossless*.** Its causal states are the minimal *sufficient statistic* of the past for the future: they retain **all** predictive information. This grounds the *definition* of meaning (predictive-equivalence classes) and is the fine / exact limit. We take the concept, not the program — we do not intend to reconstruct the process's dynamical model (the $\varepsilon$-machine).
+* **Information bottleneck — *lossy*.** It trades compression $I(X;T)$ against relevance $I(T;Y)$ via $\beta$, deliberately discarding predictive information to compress further. Its lossiness is a **feature** here: finite $\beta$ *is* a macroscopic scale, and sweeping $\beta$ sweeps the coarse-graining scale (the $\beta \to \infty$ limit recovers the lossless, sufficient-statistic case). This is the operational tool for semantic equivalence at a chosen scale.
+
+#### First-attempt procedure (high level)
+
+Meant to mimic the logic of standard statistical mechanics → thermodynamics as literally as possible:
+
+1. Obtain a dataset that fulfills the canonical-ensemble assumptions; **specify the system and the bath**.
+2. By observation alone, **enumerate the microstates**.
+   1. Use the encoder to project microstates onto macrostates.
+   2. Define a metric / similarity kernel on microstates via the macrostate they fall into — using the number of **bits** (from the semantic-similarity metric) by which macrostates differ.
+   3. Use that to define the **Hamiltonian**, and hence the Boltzmann factors.
+
+We are simply observing which states appear in concert with which others; we are not explaining why those correlations exist.
+
+#### Points requiring further care
+
+* **A metric is not yet a Hamiltonian.** A pairwise "bits of difference" kernel gives distances *between* states, not an absolute energy *per* state. To get Boltzmann factors $e^{-\beta E_i}$ we must fix an **origin / reference** (e.g. the equilibrium / consensus macrostate) so that $E_i$ = bits of semantic difference from that reference. The choice of reference is a modeling decision.
+* **The similarity → bits conversion is not automatic.** Cosine similarity is not natively an information measure; turning it into "bits" needs an explicit construction (a $-\log$ / description-length reading). This is the same bridge flagged for the energy problem.
+* **Adaptation vs. the circularity guard pull against each other.** Defining energy from a *pretrained* encoder's geometry keeps it independent of this community's frequencies (non-circular). But adapting the encoder to the community (recommended for faithfulness) makes its geometry partly a function of those frequencies — reintroducing circularity risk. These two desiderata are in tension.
+* **Marginal occupation vs. co-occurrence are different experiments.** The bare-bones Boltzmann test is the *marginal* occupation distribution of one subsystem's macrostates against energy (non-interacting). "Which states pop up in parallel with which" is *joint / co-occurrence* structure — i.e. the interaction term, to be added only if the non-interacting version fails.
+* **Counting suffices for the equilibrium distribution; dynamics is a separate, harder ask.** The observational, count-based approach is exactly right for the equilibrium Boltzmann / multiplicity measurements. The dynamical observables (detailed balance, FDT) require transitions and the Markov-closure scale criterion, and are more demanding — consistent with treating them as a later stage.
+
+## The Validation Plan: What observables will we look for and how do we determine success?
 
 Our primary form of validating our results will be attempting to reproduce the expected statistics which various statistical mechanic ensembles predict. For example, the Boltzmann distribution.
 
