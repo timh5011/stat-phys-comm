@@ -22,6 +22,8 @@ These are general guidelines for how the repo owner wants Claude to work here. T
 
 - **Go slow. Do exactly what is asked — nothing more, nothing less.** Start simple; add complexity incrementally. Do not jump ahead, over-build, or try to do everything in the first pass. Suggestions for additional or future experiments are welcome, but **describe them separately — do not implement them unprompted.**
 
+- **Start with the barest model and build up only as needed.** The owner's research strategy is to begin with the simplest, most naive model — even one not expected to work (e.g. modeling a dataset with *exact* standard equilibrium statistical mechanics: additive energy, clean ensemble assumptions, no interaction terms) — and to add complexity (e.g. interaction terms, effective-energy corrections) only when the simple version demonstrably fails. Default to the bare-bones version first; let observed failures, not anticipation, drive added sophistication.
+
 ## File editing rules (STRICT — read before touching any doc)
 
 - **NEVER edit `doc/report.md`. No exceptions.** This is the owner's report; they are highly selective about what it says and how. **All edits to `report.md` are made manually by the owner.** Claude may *read* and *quote* it, but must never modify it — not even to fix a typo, and not when told to "update doc" (that instruction never includes `report.md`). If a change to it seems warranted, describe the suggestion in chat and let the owner make it.
