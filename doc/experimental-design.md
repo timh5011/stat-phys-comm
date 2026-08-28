@@ -9,8 +9,24 @@ Our default research strategy is to begin with the simplest possible model — e
 ## Table of Contents: Pillars of the experiment
 
 * [Characterizing the encoder model](#characterizing-the-encoder-model)
+  * [STSb evaluation](#stsb-evaluation)
 * [Getting the proper datasets; datasets will mimic the microcanonical and canonical ensemble](#getting-the-proper-datasets-datasets-will-mimic-the-microcanonical-and-canonical-ensemble)
+  * [Stance: equilibrium, not non-equilibrium steady state (for now)](#stance-equilibrium-not-non-equilibrium-steady-state-for-now)
+  * [What "a real community" means here](#what-a-real-community-means-here)
+  * [Microstate and the two-ensemble construction](#microstate-and-the-two-ensemble-construction)
+  * [Primary target: the canonical ensemble first](#primary-target-the-canonical-ensemble-first)
+  * [Dataset constraints (v1)](#dataset-constraints-v1)
+  * [The ensemble source is left open](#the-ensemble-source-is-left-open)
+  * [Approximations carried into every dataset](#approximations-carried-into-every-dataset)
+  * [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)
+  * [The encoder is an instrument, not part of the physics](#the-encoder-is-an-instrument-not-part-of-the-physics)
+  * [Meaning as a causal/predictive equivalence](#meaning-as-a-causalpredictive-equivalence)
 * [The validation plan; what observables will we look for and how do we determine success?](#the-validation-plan-what-observables-will-we-look-for-and-how-do-we-determine-success)
+  * [Partitioning the latent space: defining macrostates and choosing a scale](#partitioning-the-latent-space-defining-macrostates-and-choosing-a-scale)
+  * [Encoder loss as an instrument-side resolution floor](#encoder-loss-as-an-instrument-side-resolution-floor)
+  * [Primary observable](#primary-observable)
+  * [Staging: what can be tested before the energy problem is solved](#staging-what-can-be-tested-before-the-energy-problem-is-solved)
+  * [Open problems (deferred, developed separately in the theory)](#open-problems-deferred-developed-separately-in-the-theory)
 
 ## Characterizing the encoder model
 
