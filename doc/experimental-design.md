@@ -4,7 +4,7 @@ This document outlines the high level objectives and low level details of the co
 
 ## Guiding methodology: start bare-bones, build up as needed
 
-Our default research strategy is to begin with the simplest possible model — even one that is naively simple and that we do not expect to succeed — and add complexity only when the simple version demonstrably fails. Concretely: we first attempt to model a dataset with *exact* standard equilibrium statistical mechanics (additive energy, clean canonical / microcanonical assumptions, no interaction terms). If that fails, we then consider the minimal next addition — e.g. interaction terms or effective-energy corrections — and build on top as needed. Always start as bare-bones as possible; let observed failures, not anticipation, drive added complexity.
+Our default research strategy is to begin with the simplest possible model — even one we do not expect to succeed — and add complexity only when the simple version demonstrably fails. Concretely: we first attempt to model a dataset with *exact* standard equilibrium statistical mechanics (additive energy, clean canonical / microcanonical assumptions, no interaction terms), and add the minimal next correction — interaction terms, effective-energy corrections — only when the bare version fails. Let observed failures, not anticipation, drive added complexity.
 
 ## Table of Contents: Pillars of the experiment
 
@@ -58,7 +58,7 @@ Scope and limits of this measure:
 
 ## Getting the Proper Datasets: Datasets will mimic the microcanonical and canonical ensemble microstates
 
-We hope to find a dataset which fulfills the assumptions of the microcanonical and canonical ensemble. This may be difficult to find and thus we may need to loosen this requirement. The purpose of this section is to state, as precisely as we currently can, the assumptions and constraints a dataset must satisfy to be usable — and, just as importantly, to **name every approximation** we are making rather than hand-waving past it.
+We hope to find a dataset that fulfills the microcanonical and canonical ensemble assumptions; this may be hard, so we may need to loosen the requirement. This section states, as precisely as we currently can, the assumptions and constraints a dataset must satisfy to be usable — and, just as importantly, **names every approximation** we make rather than hand-waving past it.
 
 ### Stance: equilibrium, not non-equilibrium steady state (for now)
 
@@ -79,7 +79,7 @@ From a single dataset we can build **both** ensembles:
 
 ### Primary target: the canonical ensemble first
 
-We will design the dataset around the **canonical** (subsystem-and-bath) experiment first, for a specific reason. At the whole-system scale the microcanonical test is **tautology-prone**: a whole-forum microstate is so high-dimensional it never recurs (every observed microstate has count $1$), so the estimated multiplicity of a macrostate equals its observed frequency, and the prediction $P(\text{macrostate})\propto\Omega$ becomes an identity that tests nothing. Making it non-trivial would require either computing $\Omega$ **structurally/combinatorially** (which needs energy/coarse-graining machinery not yet built) or coarse-graining microstates (an $\varepsilon$-ball grouping) so that cells recur. The canonical case avoids this: the system (a small subsystem — an individual is the simplest example, but the unit is dataset-dependent) is small, its language states recur and can be binned, and the distinction between message *types* and *tokens* gives an independent handle on multiplicity. Microcanonical is therefore deferred. (This is a preference for the canonical *construction* on technical grounds — it says nothing about *which* subsystem: that is fixed only once we have a dataset in hand.)
+We design the dataset around the **canonical** (subsystem-and-bath) experiment first. At the whole-system scale the microcanonical test is **tautology-prone**: a whole-forum microstate is so high-dimensional it never recurs (every observed microstate has count $1$), so a macrostate's estimated multiplicity equals its observed frequency and the prediction $P(\text{macrostate})\propto\Omega$ becomes an identity that tests nothing. Making it non-trivial would require either computing $\Omega$ **structurally/combinatorially** (needs energy/coarse-graining machinery not yet built) or coarse-graining microstates ($\varepsilon$-ball grouping) so cells recur. The canonical case avoids this: the subsystem is small, its language states recur and can be binned, and the message *type* vs. *token* distinction gives an independent handle on multiplicity. Microcanonical is therefore deferred. (This is a technical preference for the canonical *construction*; it says nothing about *which* subsystem — see above.)
 
 ### Dataset constraints (v1)
 
@@ -93,7 +93,7 @@ Each constraint is tagged with the approximation it encodes.
 4. **Insular / endogenously driven — no external driver of the dynamics.** The community's macrostate distribution should be internally self-generating, not *slaved* to an outside process. *(approx: treats weak external coupling as a fixed thermal bath. What matters is the **coupling/driving structure, not the subject matter** — a politics or news community observed over an internally-driven, quiet window is fine; any community (whatever its topic) that merely mirrors an external event stream is not. Distinct from constraint 5: a one-off shock is a discrete kick, whereas external driving can be continuous — even stationary — yet still non-endogenous. Search-time proxies: reply-graph depth, outbound-reference / link rate, and whether activity spikes track an external event calendar.)*
 5. **Mature, past its growth phase, with no active shock in the window.** *(approx: asserts relaxation had occurred.)*
 6. **Enough volume to populate macrostate cells with real counts.** *(approx: the sparse-sampling floor; sets a minimum size.)*
-7. **[Canonical] Persistent, identifiable subsystem units with high volume across the window** — individuals are the simplest example, but the unit could be a definable subgroup. *(Required to build a subsystem-level distribution at all; the natural unit is dataset-dependent, not fixed to a single person.)*
+7. **[Canonical] Persistent, identifiable subsystem units with high volume across the window** — individuals are the simplest example, but the unit could be a definable subgroup. *(Required to build a subsystem-level distribution at all.)*
 8. **[Canonical] Bath $\gg$ system (by volume):** the community dwarfs the chosen subsystem in activity/volume, so the subsystem is a non-dominant *fraction* of the whole. This is an extensive (size) condition only — the subsystem's opinions/stance are irrelevant here and must **not** be a selection criterion, since its distribution over ideas is precisely what we measure.
 9. **Wide temporal span with fine-grained timestamps** — to test stationarity and isolate a relaxed window. *(Upgrades constraint 3.)*
 10. **Raw volume sufficient to trace a differentiable $S(U)$ curve, not merely to populate cells.** *(approx: strengthens constraint 6. Because temperature will be defined from the first-principles derivative $\beta = \partial S/\partial U$ — not as a fitted noise parameter — we need several well-filled energy levels to finite-difference across, so total volume, not just one-count-per-cell, is the binding requirement.)*
@@ -189,11 +189,10 @@ Whether we treat **one community as a single trajectory** (many time-slices as t
 
 ### Approximations carried into every dataset
 
-* Natural language is treated as an **ergodic stationary source** (the standard machine-learning assumption; taken as approximately true).
-* We are careful **not to conflate two distinct notions of "ergodic":** the information-theoretic ergodic source (AEP / typical sets) is *not* the same as thermodynamic ergodicity (exploration of the energy shell). Conflating them is precisely the "analogy vs. first principles" failure mode criticized in the report.
-* **The encoder is a proxy for a causal/predictive notion of meaning — not a different thing.** Meaning here is environment-relative (the causal role a message plays within the community's distribution), and the only "action" is more talk (the forward flow of discourse, which is in the data). The encoder's distributional similarity is a proxy for the resulting predictive equivalence; its faithfulness rests on adaptation to the community and on predictive sufficiency. See "Meaning as a causal/predictive equivalence" below.
-* **The canonical construction needs additivity of energy across the system/bath split.** The Boltzmann derivation relies on $E_\mathrm{tot} = E_S + E_B$, i.e. a negligible interaction energy $H_\mathrm{int}$ between the chosen subsystem and the rest of the community. Whether our partition satisfies this is not yet known — it depends on the dataset and on how we split it. See "Coupling, correlations, and the additivity requirement" below.
-* **Equilibrium may not hold at any instant.** The system may instead be *relaxing toward* equilibrium, which would call for a theory of kinetics rather than equilibrium mechanics. This is noted and deferred.
+* Natural language is treated as an **ergodic stationary source** (standard ML assumption; taken as approximately true) — and this information-theoretic sense (AEP / typical sets) must **not** be conflated with thermodynamic ergodicity (exploration of the energy shell); see [The ensemble source is left open](#the-ensemble-source-is-left-open).
+* **The encoder is a proxy for a causal/predictive notion of meaning**, not a different thing; see [Meaning as a causal/predictive equivalence](#meaning-as-a-causalpredictive-equivalence) and [The encoder is an instrument](#the-encoder-is-an-instrument-not-part-of-the-physics).
+* **The canonical construction needs additivity of energy** across the system/bath split ($E_\mathrm{tot} = E_S + E_B$, i.e. negligible interaction energy $H_\mathrm{int}$); whether our partition satisfies this depends on the dataset and split — see [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement).
+* **Equilibrium may not hold at any instant.** The system may instead be *relaxing toward* equilibrium, which would call for a theory of kinetics rather than equilibrium mechanics. Noted and deferred.
 
 ### Coupling, correlations, and the additivity requirement
 
@@ -227,9 +226,7 @@ Consistent with the start-simple methodology, we begin with a general-purpose en
 
 #### Equivalence is defined at a macroscopic scale — we observe, we do not model microdynamics
 
-An essential qualification: **semantic equivalence always means equivalence at a chosen macroscopic scale**, exactly as in the passage from statistical mechanics to thermodynamics. We adopt predictive equivalence as the *definition* of "same meaning," but we do **not** intend to reconstruct the microscopic causal chain of messages. Coarse-graining that microscopic detail away is the entire point of doing statistical mechanics — the same reason thermodynamics exists. The methodology is therefore **observational and count-based**: we record which macrostates occur (and, later, which co-occur), without attempting to explain *why* those correlations arise.
-
-This clarifies how we borrow from the two nearest frameworks — both worth keeping in view, and their key difference is loss:
+An essential qualification: **semantic equivalence always means equivalence at a chosen macroscopic scale**, as in the passage from statistical mechanics to thermodynamics. Coarse-graining the microscopic detail away is the entire point of doing statistical mechanics, so the methodology is **observational and count-based**: we record which macrostates occur (and, later, which co-occur) without reconstructing the microscopic causal chain or explaining *why* the correlations arise. We borrow from the two nearest frameworks, whose key difference is loss:
 
 * **Computational mechanics — *lossless*.** Its causal states are the minimal *sufficient statistic* of the past for the future: they retain **all** predictive information. This grounds the *definition* of meaning (predictive-equivalence classes) and is the fine / exact limit. We take the concept, not the program — we do not intend to reconstruct the process's dynamical model (the $\varepsilon$-machine).
 * **Information bottleneck — *lossy*.** It trades compression $I(X;T)$ against relevance $I(T;Y)$ via $\beta$, deliberately discarding predictive information to compress further. Its lossiness is a **feature** here: finite $\beta$ *is* a macroscopic scale, and sweeping $\beta$ sweeps the coarse-graining scale (the $\beta \to \infty$ limit recovers the lossless, sufficient-statistic case). This is the operational tool for semantic equivalence at a chosen scale.
@@ -244,8 +241,6 @@ This clarifies how we borrow from the two nearest frameworks — both worth keep
    2. Define a metric / similarity kernel on microstates via the macrostate they fall into — using the number of **bits** (from the semantic-similarity metric) by which macrostates differ.
    3. Use that to define the **Hamiltonian**, and hence the Boltzmann factors.
 
-We are simply observing which states appear in concert with which others; we are not explaining why those correlations exist.
-
 #### Points requiring further care
 
 * **A metric is not yet a Hamiltonian.** A pairwise "bits of difference" kernel gives distances *between* states, not an absolute energy *per* state. To get Boltzmann factors $e^{-\beta E_i}$ we must fix an **origin / reference** (e.g. the equilibrium / consensus macrostate) so that $E_i$ = bits of semantic difference from that reference. The choice of reference is a modeling decision.
@@ -256,11 +251,7 @@ We are simply observing which states appear in concert with which others; we are
 
 ## The Validation Plan: What observables will we look for and how do we determine success?
 
-Our primary form of validating our results will be attempting to reproduce the expected statistics which various statistical mechanic ensembles predict. For example, the Boltzmann distribution.
-
-I can also measure the multiplicity of macrostates which is the cardinality of the semantic equivalance classes.
-
-The encoder will project the dataset into a latent space. We will then partition the latent space according to a scale.
+Our primary form of validation is reproducing the equilibrium statistics that the statistical-mechanics ensembles predict — first and foremost the **Boltzmann distribution** — and measuring the **multiplicity** of macrostates (the cardinality of each semantic equivalence class). The encoder projects the dataset into a latent space, which we then partition according to a scale.
 
 ### Partitioning the latent space: defining macrostates and choosing a scale
 
@@ -304,7 +295,7 @@ The encoder maps each microstate to a vector in $\mathbb{R}^d$ ($d = 384$ for Mi
 
 ### Primary observable
 
-The primary observable, in line with the canonical-first decision above, is to **reproduce the Boltzmann distribution for the chosen subsystem's microstates**: enumerate the subsystem's language microstates across timestamps and test whether its occupation statistics follow $P_i \propto e^{-\beta E_i}$ for the reservoir temperature. The subsystem/bath split is **not fixed in advance** — an individual is only the simplest example; the natural unit (a person, a subgroup, a sub-forum) is determined by the dataset (see [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)). The concrete round-one recipe that produces this observable is the [First-attempt procedure (high level)](#first-attempt-procedure-high-level) above.
+The primary observable, in line with the canonical-first decision above, is to **reproduce the Boltzmann distribution for the chosen subsystem's microstates**: enumerate the subsystem's language microstates across timestamps and test whether its occupation statistics follow $P_i \propto e^{-\beta E_i}$ for the reservoir temperature. The subsystem/bath split is **not fixed in advance** (see [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)). The concrete round-one recipe that produces this observable is the [First-attempt procedure (high level)](#first-attempt-procedure-high-level) above.
 
 ### Exploratory diagnostics: equilibrium-likeness checks from counts and timestamps
 
