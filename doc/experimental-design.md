@@ -25,7 +25,8 @@ Our default research strategy is to begin with the simplest possible model — e
   * [Partitioning the latent space: defining macrostates and choosing a scale](#partitioning-the-latent-space-defining-macrostates-and-choosing-a-scale)
   * [Encoder loss as an instrument-side resolution floor](#encoder-loss-as-an-instrument-side-resolution-floor)
   * [Primary observable](#primary-observable)
-  * [Staging: what can be tested before the energy problem is solved](#staging-what-can-be-tested-before-the-energy-problem-is-solved)
+  * [Exploratory diagnostics: equilibrium-likeness checks from counts and timestamps](#exploratory-diagnostics-equilibrium-likeness-checks-from-counts-and-timestamps)
+  * [Density-of-states estimation: prior art for the sparsity problem](#density-of-states-estimation-prior-art-for-the-sparsity-problem)
   * [Open problems (deferred, developed separately in the theory)](#open-problems-deferred-developed-separately-in-the-theory)
 
 ## Characterizing the Encoder Model
@@ -72,11 +73,11 @@ Following the same philosophy as standard statistical mechanics, a **microstate 
 From a single dataset we can build **both** ensembles:
 
 * **Microcanonical:** the *whole forum* is the system.
-* **Canonical:** *one embedded person* is the system, and the rest of the community is the heat reservoir. This is the textbook construction — a small subsystem of a microcanonical whole, with the reservoir integrated out.
+* **Canonical:** an *embedded subsystem* is the system, and the rest of the community is the heat reservoir. This is the textbook construction — a small subsystem of a microcanonical whole, with the reservoir integrated out. **The subsystem unit is not fixed here:** an individual is only the simplest *example*; the natural unit (a person, a subgroup, a sub-forum) is determined by the dataset, not decided in advance (see [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)).
 
 ### Primary target: the canonical ensemble first
 
-We will design the dataset around the **canonical** (person-as-system) experiment first, for a specific reason. At the whole-system scale the microcanonical test is **tautology-prone**: a whole-forum microstate is so high-dimensional it never recurs (every observed microstate has count $1$), so the estimated multiplicity of a macrostate equals its observed frequency, and the prediction $P(\text{macrostate})\propto\Omega$ becomes an identity that tests nothing. Making it non-trivial would require either computing $\Omega$ **structurally/combinatorially** (which needs energy/coarse-graining machinery not yet built) or coarse-graining microstates (an $\varepsilon$-ball grouping) so that cells recur. The canonical case avoids this: the system (one person) is small, its language states recur and can be binned, and the distinction between message *types* and *tokens* gives an independent handle on multiplicity. Microcanonical is therefore deferred.
+We will design the dataset around the **canonical** (subsystem-and-bath) experiment first, for a specific reason. At the whole-system scale the microcanonical test is **tautology-prone**: a whole-forum microstate is so high-dimensional it never recurs (every observed microstate has count $1$), so the estimated multiplicity of a macrostate equals its observed frequency, and the prediction $P(\text{macrostate})\propto\Omega$ becomes an identity that tests nothing. Making it non-trivial would require either computing $\Omega$ **structurally/combinatorially** (which needs energy/coarse-graining machinery not yet built) or coarse-graining microstates (an $\varepsilon$-ball grouping) so that cells recur. The canonical case avoids this: the system (a small subsystem — an individual is the simplest example, but the unit is dataset-dependent) is small, its language states recur and can be binned, and the distinction between message *types* and *tokens* gives an independent handle on multiplicity. Microcanonical is therefore deferred. (This is a preference for the canonical *construction* on technical grounds — it says nothing about *which* subsystem: that is fixed only once we have a dataset in hand.)
 
 ### Dataset constraints (v1)
 
@@ -88,13 +89,37 @@ Each constraint is tagged with the approximation it encodes.
 4. **Insular / endogenously driven** — internal dynamics dominate over exogenous news and events. *(approx: treats weak external coupling as a fixed thermal bath.)*
 5. **Mature, past its growth phase, with no active shock in the window.** *(approx: asserts relaxation had occurred.)*
 6. **Enough volume to populate macrostate cells with real counts.** *(approx: the sparse-sampling floor; sets a minimum size.)*
-7. **[Canonical] Persistent, identifiable individuals with high post volume across the window.** *(Required to build a person-level distribution at all.)*
-8. **[Canonical] Bath $\gg$ system:** the community dwarfs any single person, and the chosen person is a non-dominant voice.
+7. **[Canonical] Persistent, identifiable subsystem units with high volume across the window** — individuals are the simplest example, but the unit could be a definable subgroup. *(Required to build a subsystem-level distribution at all; the natural unit is dataset-dependent, not fixed to a single person.)*
+8. **[Canonical] Bath $\gg$ system:** the community dwarfs the chosen subsystem, which is a non-dominant part of it.
 9. **Wide temporal span with fine-grained timestamps** — to test stationarity and isolate a relaxed window. *(Upgrades constraint 3.)*
+10. **Raw volume sufficient to trace a differentiable $S(U)$ curve, not merely to populate cells.** *(approx: strengthens constraint 6. Because temperature will be defined from the first-principles derivative $\beta = \partial S/\partial U$ — not as a fitted noise parameter — we need several well-filled energy levels to finite-difference across, so total volume, not just one-count-per-cell, is the binding requirement.)*
+11. **Dynamic range: the community visits a spread of macrostates rather than parking in one dominant state.** *(approx: needed so there is a $\Delta U$ to difference across. Expected to be satisfied automatically — real communities carry a wide variety of states, and the opposite (a single occupied state) is the unrealistic, hard-to-source case. Doubles as a bonus: a spread of states lets us test the same theory across several regimes within one dataset.)*
 
 ### The ensemble source is left open
 
-Whether we treat **one community as a single trajectory** (many time-slices as the samples) or **many comparable communities as parallel draws** is intentionally left open; both remain in scope. Each carries its own debt: the one-community reading relies on the **ergodic substitution** (time-average $=$ ensemble-average), while the many-community reading relies on **homogeneity** (that the communities are the "same system" at the same macro-conditions). These demand *different* stationarity checks — within-archive drift versus cross-community comparability.
+Whether we treat **one community as a single trajectory** (many time-slices as the samples) or **many comparable communities as parallel draws** is intentionally left open. **No choice is made here, and none is needed to begin the dataset search:** when we look for candidates we will deliberately **cast a wide net for both**, and let the data we can actually obtain — not an up-front commitment — narrow it. Both readings map onto a standard move in statistical mechanics, and each carries its own debt.
+
+**One community as a trajectory — the ergodic substitution.** The forum is one system; its successive time-slices are the states it visits along a trajectory, and using them as ensemble samples invokes the ergodic hypothesis (time-average $=$ ensemble-average). Note this is *thermodynamic* ergodicity — exploration of the state space — not the information-theoretic "ergodic source" assumption; conflating the two is exactly the failure mode flagged earlier. Debts:
+
+* **Ergodic mixing:** does the community actually mix, or stall in a metastable pocket (a subculture that never couples to the rest)? Broken mixing breaks time-avg $=$ ensemble-avg.
+* **Within-archive stationarity:** the window must not drift; checked by comparing sub-windows.
+* **Autocorrelation tax:** successive slices are not independent, so the effective sample size is $\sim N/\tau$ (with $\tau$ the autocorrelation time), not $N$ — a real, measurable cost that interacts with the raw-volume constraint (10).
+
+**Many communities as parallel draws — homogeneity.** Each community is an independent replica of "the same system" at the same macro-conditions. Debts:
+
+* **Comparability:** differing size / topic / platform / era mean differing macro-conditions, so the ensemble risks being *inhomogeneous* (mixing systems at different "temperatures"); checked via cross-community comparability.
+* **Chicken-and-egg with energy:** matching communities on their macro-conditions ideally uses the energy/temperature variables not yet pinned down — so building this ensemble *rigorously* is partly gated by the energy program.
+* **Independence (the upside):** parallel communities are more plausibly independent than time-slices — *if* they do not share members or exogenous shocks — which sidesteps the autocorrelation tax.
+
+**How the two readings differ on the observables we care about:**
+
+* **Temporal / dynamical diagnostics** (net-current / detailed-balance-style and fluctuation–dissipation-style checks) are statements about transitions *over time within one system*; there is no time-ordered transition between two independent communities, so these live naturally in the **trajectory** reading.
+* **The energy axis for a differentiable $S(U)$** (constraints 10–11) is sourced differently: in the **trajectory** reading the spread in $U$ comes from *equilibrium fluctuations within the window* (narrow for a large subsystem); in the **many-community** reading it comes from *different communities sitting at different energies* (a wider, more controllable axis, but one that presupposes a common, defined energy scale).
+
+**Two practical notes.**
+
+* The readings are **not exclusive**: a natural staging is one community as a trajectory, then a matched family of communities layered on later specifically to widen the energy axis.
+* A single forum already contains a **mini-ensemble**: its many *members* (or other definable sub-units) are parallel canonical subsystems, giving some of the "many independent draws" benefit without sourcing many forums — a third flavor between the two poles.
 
 ### Approximations carried into every dataset
 
@@ -143,7 +168,7 @@ This clarifies how we borrow from the two nearest frameworks — both worth keep
 
 #### First-attempt procedure (high level)
 
-Meant to mimic the logic of standard statistical mechanics → thermodynamics as literally as possible:
+**This is the round-one test** — the first, bare-bones experiment, which produces the [Primary observable](#primary-observable) (the Boltzmann distribution). It is meant to mimic the logic of standard statistical mechanics → thermodynamics as literally as possible:
 
 1. Obtain a dataset that fulfills the canonical-ensemble assumptions; **specify the system and the bath**.
 2. By observation alone, **enumerate the microstates**.
@@ -211,16 +236,27 @@ The encoder maps each microstate to a vector in $\mathbb{R}^d$ ($d = 384$ for Mi
 
 ### Primary observable
 
-The primary observable, in line with the canonical-first decision above, is to **reproduce the Boltzmann distribution for a single person's microstates**: enumerate one person's language microstates across timestamps, and test whether their occupation statistics follow $P_i \propto e^{-\beta E_i}$ for the reservoir temperature.
+The primary observable, in line with the canonical-first decision above, is to **reproduce the Boltzmann distribution for the chosen subsystem's microstates**: enumerate the subsystem's language microstates across timestamps and test whether its occupation statistics follow $P_i \propto e^{-\beta E_i}$ for the reservoir temperature. The subsystem/bath split is **not fixed in advance** — an individual is only the simplest example; the natural unit (a person, a subgroup, a sub-forum) is determined by the dataset (see [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)). The concrete round-one recipe that produces this observable is the [First-attempt procedure (high level)](#first-attempt-procedure-high-level) above.
 
-### Staging: what can be tested before the energy problem is solved
+### Exploratory diagnostics: equilibrium-likeness checks from counts and timestamps
 
-The energy function and temperature are hard, unsolved pieces (below). It is worth noting that **not every test needs them.** A useful staging falls out:
+*These are exploratory diagnostics — **not** the formal round-one test, and not a substitute for the energy-based program.* A useful batch of checks requires only **counts and timestamps** (no energy function), so they can be run early as exploratory data analysis (EDA) to see whether a candidate system even *looks* equilibrium-like. They inform dataset selection and sanity-checking; they do **not** stand in for the formal, energy-based validation (the [Primary observable](#primary-observable)), which is developed separately — energy is under active development, not set aside.
 
-* **Energy-free tests (run first):** stationarity (does the macrostate distribution drift across sub-windows?), **detailed balance** (are there net probability currents / cycles in the macrostate-to-macrostate transitions?), and **fluctuation–dissipation** (does the response to a natural shock match spontaneous fluctuations?). These need only **counts and timestamps.** Nonzero currents or an FDT violation would indicate a NESS rather than equilibrium.
-* **Energy-dependent test (run later):** the Boltzmann distribution itself, which requires both an energy function and a temperature.
+* **Stationarity** — does the macrostate distribution drift across sub-windows?
+* **Detailed balance** — are there net probability currents / cycles in the macrostate-to-macrostate transitions? Nonzero currents point to a NESS rather than equilibrium.
+* **Fluctuation–dissipation** — does the response to a natural shock match spontaneous fluctuations? A violation likewise points to a NESS.
 
-This lets us establish whether the system is even *equilibrium-like* before committing to the energy machinery.
+Being *dynamical* (detailed balance and FDT read transitions over time), these sit naturally in the one-community-as-trajectory reading of the ensemble-source fork above. Treat them as reconnaissance: they can flag a system as clearly-not-equilibrium early, but passing them is necessary, not sufficient, and is not itself the validation target.
+
+### Density-of-states estimation: prior art for the sparsity problem
+
+Because temperature will be defined from first-principles derivatives ($\beta = \partial S/\partial U$, and similar) rather than as a fitted noise parameter, the energy stage needs a **well-sampled $S(U)$ curve we can finite-difference** — and the tails of that curve go sparse first (rare energies are visited rarely). This is a long-standing problem in computational physics; the standard machinery is worth keeping on file, with one caveat that decides how much of it actually transfers to our setting.
+
+* **Wang–Landau sampling.** A Monte Carlo method that estimates the density of states $g(E)$ *directly* by doing a random walk in energy with acceptance $\propto 1/g(E)$, which flattens the energy histogram and forces the walk to visit rare energies as often as common ones; $g(E)$ is refined on the fly by a shrinking modification factor. Payoff: a single estimate of $g(E)$ (hence $S(E) = k_B \ln g(E)$) across the *full* energy range, from which any thermodynamic quantity — and its derivatives — follows at any temperature.
+* **Multicanonical sampling (MUCA).** The close predecessor: sample from a reweighted "multicanonical" ensemble engineered to give a flat energy histogram, so the simulation crosses energy barriers and visits the whole range; canonical averages at any $T$ are then recovered by reweighting. Same goal as Wang–Landau (beat the sparse tails / rarely-visited states), reached with a fixed bias rather than an adaptive one.
+* **WHAM (Weighted Histogram Analysis Method).** A *post-processing* estimator, not a sampler: it optimally (minimum-variance) stitches together histograms collected under different conditions (different temperatures, or biased windows) into a single best estimate of $g(E)$ / the free-energy profile, correcting for each run's sampling weight. This is the one closest in spirit to what we might actually do — merge counts from multiple time-windows or communities sitting at different energies into one $S(U)$ estimate.
+
+**The caveat that decides which of these transfers.** Wang–Landau and MUCA are *active-sampling* algorithms: they assume you can propose moves in energy space and evaluate an energy function to bias the walk. Our data is **observational** — we take the samples the community actually produced and cannot reweight its real dynamics — and we have no energy function yet, so neither transfers directly. What *does* transfer is the **analysis idea**: WHAM-style optimal combination of overlapping histograms is a way to build a low-variance $S(U)$ from counts we already have, and the flat-histogram philosophy is the conceptual reference for how a smooth density of states is recovered despite sparse tails. Reserved for the energy stage; listed here so we don't reinvent it.
 
 ### Open problems (deferred, developed separately in the theory)
 
