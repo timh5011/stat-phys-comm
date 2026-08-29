@@ -16,6 +16,8 @@ Our default research strategy is to begin with the simplest possible model — e
   * [Microstate and the two-ensemble construction](#microstate-and-the-two-ensemble-construction)
   * [Primary target: the canonical ensemble first](#primary-target-the-canonical-ensemble-first)
   * [Dataset constraints (v1)](#dataset-constraints-v1)
+  * [Operationalizing the constraints: a checkable search filter](#operationalizing-the-constraints-a-checkable-search-filter)
+  * [Candidate source landscape (structural)](#candidate-source-landscape-structural)
   * [The ensemble source is left open](#the-ensemble-source-is-left-open)
   * [Approximations carried into every dataset](#approximations-carried-into-every-dataset)
   * [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)
@@ -64,7 +66,7 @@ We commit to **equilibrium** statistical mechanics as the target. Systems that a
 
 ### What "a real community" means here
 
-We want a dataset that was, at some point, a **genuine real-world community** — a discussion forum, a bounded online community with internal dialogue — as opposed to a pile of unrelated texts. It does **not** need to be a *living*, continuously-updating feed. A static archived snapshot (e.g. a discussion forum from ~2010) is perfectly acceptable, and is in fact preferred, provided it retains the internal temporal and reply structure (below).
+We want a dataset that was, at some point, a **genuine real-world community** — a discussion forum, a bounded online community with internal dialogue — as opposed to a pile of unrelated texts. It does **not** need to be a *living*, continuously-updating feed. A static archived snapshot (e.g. a discussion forum from ~2010) is perfectly acceptable, and is in fact preferred, provided it retains the internal temporal structure — per-message timestamps and author attribution — and, preferably, reply structure (below).
 
 ### Microstate and the two-ensemble construction
 
@@ -84,16 +86,80 @@ We will design the dataset around the **canonical** (subsystem-and-bath) experim
 Each constraint is tagged with the approximation it encodes.
 
 1. **Was a genuine, bounded real-world community.** *(approx: asserts a community boundary exists; the boundary is fuzzy.)*
-2. **Retains timestamps and reply/thread structure.** *(Hard requirement — needed for detailed-balance testing and any temporal ordering; not an approximation.)*
+2. **Temporal + attribution structure (reply structure preferred).**
+   * **[Hard] Per-message timestamps and author/unit IDs** — timestamps give the temporal ordering; author/unit IDs attribute each message and let us carve a subsystem/bath split. Not an approximation.
+   * **[Preference] Reply/thread structure** — a cleaner sampling channel for estimating macrostate → macrostate transitions: reply-linked message pairs inject fewer spurious cross-conversation pairings than plain temporal succession (especially at whole-forum scale). Any pairing rule feeds the *same* aggregate estimator, so this improves signal-to-noise rather than being required; keep it when present, never disqualifying.
 3. **Sampled from a stationary window, not the whole lifetime; stationarity is checked, not assumed.** *(approx: "stationary enough." This guards the pooling trap — pooling a community's whole lifetime mixes non-equilibrium distributions / a relaxation trajectory into one blurred pseudo-ensemble.)*
-4. **Insular / endogenously driven** — internal dynamics dominate over exogenous news and events. *(approx: treats weak external coupling as a fixed thermal bath.)*
+4. **Insular / endogenously driven — no external driver of the dynamics.** The community's macrostate distribution should be internally self-generating, not *slaved* to an outside process. *(approx: treats weak external coupling as a fixed thermal bath. What matters is the **coupling/driving structure, not the subject matter** — a politics or news community observed over an internally-driven, quiet window is fine; any community (whatever its topic) that merely mirrors an external event stream is not. Distinct from constraint 5: a one-off shock is a discrete kick, whereas external driving can be continuous — even stationary — yet still non-endogenous. Search-time proxies: reply-graph depth, outbound-reference / link rate, and whether activity spikes track an external event calendar.)*
 5. **Mature, past its growth phase, with no active shock in the window.** *(approx: asserts relaxation had occurred.)*
 6. **Enough volume to populate macrostate cells with real counts.** *(approx: the sparse-sampling floor; sets a minimum size.)*
 7. **[Canonical] Persistent, identifiable subsystem units with high volume across the window** — individuals are the simplest example, but the unit could be a definable subgroup. *(Required to build a subsystem-level distribution at all; the natural unit is dataset-dependent, not fixed to a single person.)*
-8. **[Canonical] Bath $\gg$ system:** the community dwarfs the chosen subsystem, which is a non-dominant part of it.
+8. **[Canonical] Bath $\gg$ system (by volume):** the community dwarfs the chosen subsystem in activity/volume, so the subsystem is a non-dominant *fraction* of the whole. This is an extensive (size) condition only — the subsystem's opinions/stance are irrelevant here and must **not** be a selection criterion, since its distribution over ideas is precisely what we measure.
 9. **Wide temporal span with fine-grained timestamps** — to test stationarity and isolate a relaxed window. *(Upgrades constraint 3.)*
 10. **Raw volume sufficient to trace a differentiable $S(U)$ curve, not merely to populate cells.** *(approx: strengthens constraint 6. Because temperature will be defined from the first-principles derivative $\beta = \partial S/\partial U$ — not as a fitted noise parameter — we need several well-filled energy levels to finite-difference across, so total volume, not just one-count-per-cell, is the binding requirement.)*
 11. **Dynamic range: the community visits a spread of macrostates rather than parking in one dominant state.** *(approx: needed so there is a $\Delta U$ to difference across. Expected to be satisfied automatically — real communities carry a wide variety of states, and the opposite (a single occupied state) is the unrealistic, hard-to-source case. Doubles as a bonus: a spread of states lets us test the same theory across several regimes within one dataset.)*
+
+### Operationalizing the constraints: a checkable search filter
+
+The constraints above are stated in *physics* terms; several name objects (macrostates, $S(U)$, energy) that don't exist until after acquisition and processing. This section turns them into a filter we can actually run against candidate datasets. Two organizing cuts do the work:
+
+* **When can a check be applied?** — **Tier 1 (search-time):** decidable from a dataset's *metadata / schema / description*, before any analysis. **Tier 2 (post-acquisition):** only measurable once we have the data and have run the pipeline. Tier 2 items are *not* search criteria — we do not screen on them.
+* **What kind is a threshold?** — **metadata thresholds** take real (deliberately generous) screening numbers now; **model-dependent thresholds** wait on the partition / energy scale and are written as *formulas* that resolve once that scale is fixed — never as fake numbers.
+
+Wide-net principle: **only the hard gates reject.** Everything else is a graded score used to *rank* candidates, so the net stays wide.
+
+**Hard gates (reject a candidate only if these fail):**
+
+1. **Genuine bounded community** (constraint 1) — a forum / board / subreddit / Q&A site with recurring membership, not a scraped pile of unrelated text.
+2. **Timestamps + author/unit IDs** (constraint 2a) — the schema carries a per-message timestamp *and* an author/unit identifier.
+3. **A loose minimum volume** (constraints 6/10) — reject only the obviously-dead; the *precise* floor is model-dependent (below).
+
+**The mapping (constraint → search-time proxy → tier → role → threshold):**
+
+| # | Constraint | Search-time proxy | Tier | Role | Threshold |
+|---|---|---|---|---|---|
+| 1 | Bounded community | platform type; recurring membership | 1 | **gate** | categorical |
+| 2a | Timestamps + author IDs | schema has timestamp + author fields | 1 | **gate** | granularity ≤ ~1 min |
+| 2b | Reply/thread structure | schema has parent/reply-to or thread IDs | 1 | preference | — |
+| 3 | Stationary window | *(measured, not screened)* | 2 | post-acq. gate | — |
+| 4 | No external driver | reply-graph depth; outbound-link rate; spikes vs. external calendar | 1 → 2 confirm | preference | — |
+| 5 | Mature, no shock | activity time-series shape (plateau, no spikes) | 1 | preference | — |
+| 6/10 | Volume | total message / token count | 1 outer, 2 precise | gate (loose) + pref | ≥ ~10^5 (generous); precise = formula in K |
+| 7 | Subsystem units | per-author post-count distribution has persistent high-volume units | 1 | preference | top units ≥ ~10^3–10^4 msgs |
+| 8 | Bath ≫ system | same distribution: no unit dominates | 1 | preference | any single unit ≲ a few % of volume |
+| 9 | Wide span, fine ts | total span; carve-able sub-windows | 1 | preference | ≥ ~3–5 sub-windows |
+| 11 | Dynamic range | topic / thread diversity | 1 proxy, 2 confirm | preference (near-free) | — |
+
+*The metadata thresholds in the table are deliberately generous **screening floors** — tunable, to be recalibrated against the chosen partition scale; they reject only the obviously-unusable.*
+
+**Model-dependent thresholds (formulas, not numbers).** The precise per-cell sampling floor is $\gtrsim c$ counts per macrostate cell for a target $c \sim$ tens — i.e. total $\gtrsim c\,K$ per window, with the transition matrix needing counts spread across its populated $K \times K$ entries; the Boltzmann / temperature thresholds wait on the energy program. These stay symbolic and resolve to numbers once the scale is fixed.
+
+**Ranking rubric.** Pass the three hard gates, then score the graded preferences (2b, 4, 5, 7, 8, 9, 11) — each satisfied / partial / absent — and rank candidates by total. Nothing but a failed gate removes a candidate from consideration.
+
+**Three tensions the ranking must navigate** (they say what to *prioritize*, not just accept/reject):
+
+1. **Volume vs. stationarity.** More data tempts a longer pooling window, but stationarity wants a *short* relaxed window → prioritize **activity density** (messages per unit time) so a short window stays data-rich. Density beats span.
+2. **Insularity vs. volume.** The most active communities are often the most externally-driven → look for the **large-but-insular** sweet spot (a big community that is nonetheless endogenously driven).
+3. **Subsystem volume vs. bath ≫ system.** A prolific unit that is *still* a small fraction only exists in a **large community with a long tail** of high-volume-but-minority units.
+
+Tier-2 items held for after acquisition: stationarity (3), the precise sampling floor (6/10), the autocorrelation time $\tau$, confirmation of dynamic range in macrostate space (11), and energy additivity across the split.
+
+### Candidate source landscape (structural)
+
+Where such datasets actually live, judged **only on the hard gates** (structural properties, which are stable). **Access and licensing are volatile and are *not* asserted here — verify at acquisition time.** (For instance, Reddit's Pushshift public access was revoked in May 2023; bulk history now comes via other mirrors.)
+
+**Standard storage hosts to search:** Hugging Face Datasets, Kaggle, Zenodo, the Internet Archive (archive.org), Academic Torrents, and the Linguistic Data Consortium (LDC); plus purpose-built structured-conversation toolkits — notably **ConvoKit** (Cornell), which redistributes many corpora in a uniform speaker / utterance / conversation format.
+
+| Source type | Bounded community? | Timestamps | Author IDs | Reply structure | Scale | Notes |
+|---|---|---|---|---|---|---|
+| **Stack Exchange Data Dump** (archive.org, per-site XML) | yes — each site | yes | yes | yes (question→answer + comments) | large | ~quarterly dumps; cc-by-sa; cleanest out-of-the-box fit |
+| **Reddit archives** (Academic Torrents / Arctic Shift, per-subreddit) | yes — each subreddit | yes | yes | yes (`parent_id`) | very large | Pushshift public revoked 2023 → use mirrors |
+| **ConvoKit corpora** (Cornell) | yes — per corpus | varies by corpus | yes (speakers) | yes | medium–large | pre-parsed uniform format; includes Reddit, Wikipedia Talk, Stack Exchange, forums |
+| **Classic web forums** (phpBB / vBulletin archives) | yes | usually | yes | yes (threads) | varies | often needs scraping / parsing; found on archive.org / Kaggle |
+| **Usenet / Google Groups archives** | per newsgroup | yes | yes | yes (threaded) | large | messier structure |
+| **Wikipedia Talk pages** (dumps / ConvoKit) | per page / topic | yes | yes (editors) | reconstructed | large | collaborative rather than conversational |
+
+Best first-look candidates that clear every hard gate out of the box: the **Stack Exchange Data Dump** and **per-subreddit Reddit archives** (or their pre-parsed **ConvoKit** versions). When we move to actually acquire, I can do a live check on current availability and licensing for the specific pick.
 
 ### The ensemble source is left open
 
@@ -147,6 +213,8 @@ The physics of interest concerns causal semantic macrostates that exist **indepe
 ### Meaning as a causal/predictive equivalence
 
 Two premises of the theory sharpen what the encoder is for. (i) Semantic meaning is **not** inherent to a sentence in a vacuum; it is an emergent property of a message's **causal role within a specific environment**, and that environment is the distribution modeling the community. (ii) The only "action" a receiver takes is to **emit further messages** — the causal chain is A's message → induces B's message → induces C's, entirely within the medium of communication, so the behavioral readout is just the forward discourse, already present in the dataset.
+
+*Scale clarification.* The message chain above is kept to make the **conceptual** point — that the only action available to agents is emitting further messages — **not** to prescribe tracking individual message-to-message causal links. Meaning is characterized at the **macrostate** scale: it is macrostates that induce macrostates, observed only by aggregating over many microstates, and the mathematics is done with macrostate averages. Following individual microstate causal chains would be poor statistics; the chain is illustrative of the mechanism, not the unit of analysis.
 
 Under these premises the target notion is **predictive equivalence**: two messages are equivalent iff they induce the same distribution over the community's future messages. This is the **causal states** notion of computational mechanics (classes of pasts with the same conditional distribution over futures), and equivalently the **information bottleneck with the future as the relevance variable** ($\min I(X;T) - \beta I(T;Y)$ with $Y$ = subsequent messages — already our framework). So the encoder is not the wrong *kind* of tool; its distributional similarity is a **proxy** for this predictive map.
 
