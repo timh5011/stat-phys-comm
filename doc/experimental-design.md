@@ -23,6 +23,7 @@ Our default research strategy is to begin with the simplest possible model — e
   * [Coupling, correlations, and the additivity requirement](#coupling-correlations-and-the-additivity-requirement)
   * [The encoder is an instrument, not part of the physics](#the-encoder-is-an-instrument-not-part-of-the-physics)
   * [Meaning as a causal/predictive equivalence](#meaning-as-a-causalpredictive-equivalence)
+  * [Concrete candidate options found (initial search)](#concrete-candidate-options-found-initial-search)
 * [The Validation Plan: What observables will we look for and how do we determine success?](#the-validation-plan-what-observables-will-we-look-for-and-how-do-we-determine-success)
   * [Partitioning the latent space: defining macrostates and choosing a scale](#partitioning-the-latent-space-defining-macrostates-and-choosing-a-scale)
   * [Encoder loss as an instrument-side resolution floor](#encoder-loss-as-an-instrument-side-resolution-floor)
@@ -248,6 +249,29 @@ An essential qualification: **semantic equivalence always means equivalence at a
 * **Adaptation vs. the circularity guard pull against each other.** Defining energy from a *pretrained* encoder's geometry keeps it independent of this community's frequencies (non-circular). But adapting the encoder to the community (recommended for faithfulness) makes its geometry partly a function of those frequencies — reintroducing circularity risk. These two desiderata are in tension.
 * **Marginal occupation vs. co-occurrence are different experiments.** The bare-bones Boltzmann test is the *marginal* occupation distribution of one subsystem's macrostates against energy (non-interacting). "Which states pop up in parallel with which" is *joint / co-occurrence* structure — i.e. the interaction term, to be added only if the non-interacting version fails.
 * **Counting suffices for the equilibrium distribution; dynamics is a separate, harder ask.** The observational, count-based approach is exactly right for the equilibrium Boltzmann / multiplicity measurements. The dynamical observables (detailed balance, FDT) require transitions and the Markov-closure scale criterion, and are more demanding — consistent with treating them as a later stage.
+
+### Concrete candidate options found (initial search)
+
+The explicit datasets surfaced by a first pass over the [source landscape](#candidate-source-landscape-structural), applying the [search filter](#operationalizing-the-constraints-a-checkable-search-filter). All three source types clear the three hard gates; the ranking is by graded preferences and the three tensions. **Access and licensing were checked on 2026-08-29 and are volatile — re-verify at acquisition.**
+
+Verified status changes since the source landscape was written:
+
+* **Stack Exchange:** official dumps moved **behind a login** (account settings page) on 2024-07-12, and archive.org re-uploads are discouraged — but the community keeps mirroring them (latest **2025-09-30** dump on Academic Torrents and re-uploaded to archive.org). License unchanged: **CC-BY-SA 4.0** (shareable with attribution). Format unchanged: per-site XML (Posts, Users, Comments, PostHistory, PostLinks, …).
+* **Reddit:** [Arctic Shift](https://arctic-shift.photon-reddit.com/download-tool) is now the live access point (API + web search + monthly dumps); per-subreddit bulk files on Academic Torrents as zstd NDJSON, ~2005–2025. But Reddit's data licensing is now **actively contested** — the 2024 "Public Content Policy" requires a contract for commercial use, and Reddit has active litigation over data use. Public archives are still widely used in academia; treat the license as gray and **non-redistributable**.
+* **ConvoKit:** per-utterance schema carries exactly what we need (`speaker`, `conversation_id`, `reply_to`, `timestamp`, `text`, + `score`, `permalink`, …). Its per-subreddit Reddit corpus pulls **any single subreddit pre-parsed** (`download("subreddit-<name>")`), inception → **Oct 2018**, ~948k subreddits available.
+
+**Ranked options:**
+
+1. **ConvoKit per-subreddit Reddit corpus** — *best overall for round one.* Clears every gate; **pre-parsed** (lowest engineering friction); genuinely conversational (`reply_to` chains → strongest fit for the forward-discourse premise); the **Oct-2018 cutoff is a feature** (a closed, static snapshot — good for stationarity / maturity). You choose the subreddit to satisfy the tensions. This is the **trajectory** ensemble reading. *Caveats:* Reddit license contested (fine for a private research probe; mind redistribution); capped at 2018 (use raw Arctic Shift for newer).
+2. **Stack Exchange Data Dump, one mid-size mature site** — *cleanest license + schema; the parallel-communities track.* CC-BY-SA 4.0 (safe for anything portfolio-public); cleanest out-of-the-box schema; most sharply bounded/insular; explicit Q→A + comment structure. The 180+ sites are a **ready-made parallel-communities ensemble** at different energies (serves the second ensemble reading and the WHAM-style energy axis). *Weakness:* Q&A, not free discussion → weaker forward-discourse dynamics (comments are the discourse-like channel); access now needs a login or a community mirror.
+3. **Raw per-subreddit Reddit archive (Arctic Shift / Academic Torrents)** — *same shape as #1, full volume/control, more parsing.* Use only if ConvoKit's packaged version of the chosen subreddit is too small or absent, or newer-than-2018 data is needed.
+
+**Concrete instance picks** (final choice is a Tier-2 confirm — check the per-user post-count distribution for a long tail, and activity density for a stationary window):
+
+* **Reddit:** an evergreen hobby community — e.g. `r/homebrewing`, `r/woodworking`, `r/boardgames`, `r/chess` — or `r/ChangeMyView` (very conversational, strong reply chains, but note its debate structure).
+* **Stack Exchange:** `english`, `scifi`, `worldbuilding`, `rpg`, or `boardgames` — mid-size, peaked mid-2010s, evergreen. **Avoid Stack Overflow** (too large + tech-industry-driven = external driver + reference, not discussion).
+
+**Explicitly excluded:** ConvoKit's **Conversations-Gone-Awry** corpora (Wikipedia / CMV) are *selected on outcome* (conflict escalation) — biased subsamples, wrong for measuring an equilibrium macrostate distribution. **Wikipedia Talk / WikiConv** are collaborative rather than conversational (lower fit).
 
 ## The Validation Plan: What observables will we look for and how do we determine success?
 
